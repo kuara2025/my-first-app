@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3b5bdb">
+<title>중등 수학 실력 점검 · 중2·중3</title>
+<meta name="description" content="중학교 2·3학년 수학 전 단원을 진단하고 부족한 단원을 보충 연습하는 웹앱">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1f2937;--mut:#6b7280;--pri:#3b5bdb;--pri2:#e8edff;--good:#2f9e44;--mid:#f08c00;--low:#e03131;--line:#e5e7eb}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:17px;line-height:1.6}
+#app{max-width:720px;margin:0 auto;padding:12px 14px 40px}
+.hero{text-align:center;padding:22px 8px 8px}.hero h1{margin:0 0 6px;font-size:26px;letter-spacing:-.5px}.hero p{margin:0;color:var(--mut)}
+.card{background:var(--card);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card.center{text-align:center}
+h2{font-size:19px;margin:0 0 8px}h3{font-size:16px;margin:14px 0 6px;color:var(--mut)}
+.muted{color:var(--mut);font-size:15px;margin:6px 0}.tiny{color:var(--mut);font-size:13px;margin:8px 0 0}.lab{margin:12px 0 4px;font-weight:600;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-size:15px;cursor:pointer;color:var(--ink);min-height:44px}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:600}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:17px;font-weight:600;cursor:pointer;min-height:48px;flex:1}
+.btn.ghost{background:var(--pri2);color:var(--pri)}.btn.big{width:100%;margin-top:14px;font-size:18px;min-height:54px}.btn.small{flex:none;min-height:40px;padding:8px 14px;font-size:15px;margin-top:8px}
+.row{display:flex;gap:10px;margin-top:14px}
+.link{background:none;border:0;color:var(--pri);font-size:16px;cursor:pointer;padding:8px 0;min-height:44px}
+.topbar{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:15px}
+.prog{height:6px;background:#dfe4f5;border-radius:6px;overflow:hidden}.prog i{display:block;height:100%;background:var(--pri)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.tag{background:#eef0f6;border-radius:8px;padding:2px 9px;font-size:13px;color:#444}
+.tag.lv1{background:#e6f6ea;color:#1b6b30}.tag.lv2{background:#fff2d9;color:#8a5600}.tag.lv3{background:#fde8e8;color:#a12121}
+.q{font-size:19px;line-height:1.9;margin:6px 0 14px;word-break:keep-all;overflow-wrap:anywhere}
+.ansrow input{width:100%;font-size:22px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;outline:none}
+.ansrow input:focus{border-color:var(--pri)}.ansrow input:disabled{background:#f3f4f6}
+.keys{display:flex;gap:8px;margin-top:8px}.keys button{flex:1;min-height:44px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-size:18px;cursor:pointer}
+.choices{display:grid;gap:8px}.choice{display:flex;gap:10px;align-items:center;text-align:left;padding:12px;border:2px solid var(--line);background:#fff;border-radius:12px;font-size:18px;cursor:pointer;min-height:50px;color:var(--ink)}
+.choice .no{display:inline-flex;width:28px;height:28px;border-radius:50%;background:#eef0f6;align-items:center;justify-content:center;font-size:14px;flex:none}
+.choice.on{border-color:var(--pri);background:var(--pri2)}.choice.right{border-color:var(--good);background:#e6f6ea}.choice.wrong{border-color:var(--low);background:#fde8e8}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}.fb.ok{background:#e6f6ea}.fb.no{background:#fde8e8}.fb p{margin:6px 0}
+.hintbox{margin-top:12px;background:#fff7e0;border-radius:10px;padding:10px 12px;font-size:15px}
+.sol{font-size:16px;word-break:keep-all;overflow-wrap:anywhere}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.15;font-size:.9em}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}.fr>span:last-child{padding:0 3px}
+.rt{white-space:nowrap}.ov{border-top:1.5px solid currentColor;padding:0 2px;margin-left:1px}
+sup{font-size:.7em;line-height:0}
+.ugrid{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:560px){.ugrid{grid-template-columns:1fr 1fr}}
+.ucard{display:flex;flex-direction:column;gap:5px;text-align:left;padding:11px 12px;border:1.5px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;color:var(--ink);font-size:16px}
+.ucard small{color:var(--mut);font-size:13px}
+.bar{display:block;height:8px;background:#e9ecf3;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:#9aa3b5}
+.good .bar i{background:var(--good)}.mid .bar i{background:var(--mid)}.low .bar i{background:var(--low)}
+.hrow{display:flex;flex-direction:column;width:100%;text-align:left;padding:10px 12px;border:1.5px solid var(--line);background:#fff;border-radius:12px;margin:6px 0;cursor:pointer;color:var(--ink);font-size:15px}
+.resume{background:var(--pri2);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:2px}
+.score{font-size:64px;font-weight:800;color:var(--pri);line-height:1.1}.score span{font-size:24px;margin-left:4px}
+.lvrow{display:flex;gap:8px}.lvbox{flex:1;background:#f6f7fb;border-radius:12px;padding:10px;text-align:center;display:flex;flex-direction:column}.lvbox span{font-size:24px;font-weight:700}.lvbox small{color:var(--mut)}
+.urow{padding:10px 0;border-bottom:1px solid var(--line)}.urow:last-of-type{border:0}.uh{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.urow em{font-style:normal;font-size:13px;font-weight:700}.urow.good em{color:var(--good)}.urow.mid em{color:var(--mid)}.urow.low em{color:var(--low)}.urow small{color:var(--mut);font-size:13px}
+.todo{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.todo>div{flex:1}.todo small{display:block;color:var(--mut);font-size:13px}
+.todo .n{width:28px;height:28px;border-radius:50%;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+details.wr{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}details.wr summary{cursor:pointer}.wq{margin-top:6px;font-size:16px}
+.foot{color:var(--mut);font-size:13px;margin-top:22px;padding:0 4px}.foot p{margin:4px 0}
+button:focus-visible,input:focus-visible{outline:3px solid #9db4ff;outline-offset:1px}
+.dt{position:relative;display:inline-block}.dt::before{content:'';position:absolute;top:.1em;left:50%;width:.13em;height:.13em;background:currentColor;border-radius:50%;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div id="app"><p style="text-align:center;margin-top:40px">불러오는 중...</p></div>
+<noscript><p style="text-align:center">이 앱은 자바스크립트가 필요해요.</p></noscript>
+<script>
+(function(){
+/* ===== 기본 도구 ===== */
+let _s=1;
+function setSeed(s){_s=(s>>>0)||1}
+function rand(){_s=(_s+0x6D2B79F5)>>>0;let t=_s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}
+const ri=(a,b)=>a+Math.floor(rand()*(b-a+1));
+const pick=a=>a[Math.floor(rand()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a};
+const nz=(a,b)=>{let v;do{v=ri(a,b)}while(v===0);return v};
+const F=(n,d=1)=>{if(d<0){n=-n;d=-d}const g=gcd(n,d)||1;return{n:n/g,d:d/g}};
+const fadd=(a,b)=>F(a.n*b.d+b.n*a.d,a.d*b.d),fsub=(a,b)=>F(a.n*b.d-b.n*a.d,a.d*b.d),fmul=(a,b)=>F(a.n*b.n,a.d*b.d),fdiv=(a,b)=>F(a.n*b.d,a.d*b.n);
+const M=n=>String(n).replace('-','−');
+const fs=f=>f.d===1?M(f.n):M(f.n)+'/'+f.d;
+const fr=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
+const fh=f=>f.d===1?M(f.n):(f.n<0?'−':'')+fr(Math.abs(f.n),f.d);
+const SUP=e=>`<sup>${e}</sup>`;
+const dt=d=>`<span class="dt">${d}</span>`;
+const rt=x=>`<span class="rt">√<span class="ov">${x}</span></span>`;
+const X=(v,e)=>e===0?'':e===1?v:v+SUP(e);
+const par=n=>n<0?`(${M(n)})`:`${n}`;
+const sgn=n=>n<0?`− ${-n}`:`+ ${n}`;
+function poly(cs,vs){let s='',first=true;cs.forEach((c,i)=>{if(!c)return;const a=Math.abs(c),v=vs[i];const body=v===''?String(a):(a===1?'':String(a))+v;s+=first?(c<0?'−':'')+body:(c<0?' − ':' + ')+body;first=false});return s||'0'}
+const lin=(a,b)=>poly([a,b],['x','']);
+const quad=(a,b,c)=>poly([a,b,c],['x'+SUP(2),'x','']);
+const fact=n=>{const o=[];for(let p=2;p*p<=n;p++)while(n%p===0){o.push(p);n/=p}if(n>1)o.push(n);return o};
+const factStr=n=>{const m={};fact(n).forEach(p=>m[p]=(m[p]||0)+1);return Object.entries(m).map(([p,e])=>e>1?p+SUP(e):p).join(' × ')||'1'};
+const isFin=(n,d)=>{d/=gcd(n,d);while(d%2===0)d/=2;while(d%5===0)d/=5;return d===1};
+const sqf=n=>{let r=1;const m={};fact(n).forEach(p=>m[p]=(m[p]||0)+1);for(const p in m)if(m[p]%2)r*=+p;return r};
+const isSq=n=>Number.isInteger(Math.sqrt(n));
+const TRI=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10]];
+const scTri=()=>{const t=pick(TRI);const k=t[2]>20?1:t[2]===10?ri(1,2):ri(1,4);return t.map(v=>v*k)};
+const C=(n,r)=>{let v=1;for(let i=1;i<=r;i++)v=v*(n-r+i)/i;return Math.round(v)};
+const Pm=(n,r)=>{let v=1;for(let i=0;i<r;i++)v*=n-i;return v};
+const fct=n=>n<=1?1:n*fct(n-1);
+const NUM=(q,v,hint,sol)=>{const f=typeof v==='number'?F(Math.round(v*1e6),1e6):v;return{type:'num',q,av:f.n/f.d,ansText:fs(f),hint,sol}};
+const CH=(q,right,wrongs,hint,sol)=>{const u=[...new Set([right,...wrongs.filter(w=>w!==right)])];const sh=shuffle(u);return{type:'choice',q,choices:sh,ai:sh.indexOf(right),ansText:right,hint,sol}};
+const U={};
+
+/* ===== 중2 ===== */
+// M2-01 유리수와 순환소수
+U['M2-01']=[
+[[1],L=>{let n,den;do{den=pick([12,15,18,20,24,28,30,35,36,40,42,45,48,50,56,60,72,75,80,84,90,96,125,140,150,160,175,180,200]);n=ri(1,2*den-1)}while(n%den===0);
+ const r=F(n,den),fin=isFin(n,den);
+ return CH(`분수 ${fr(n,den)} 을(를) 소수로 나타내면 어떤 소수가 될까요?`,fin?'유한소수':'무한소수(순환소수)',[fin?'무한소수(순환소수)':'유한소수'],
+ '기약분수로 고친 뒤 분모의 소인수를 살펴보세요. 소인수가 2나 5뿐이면 유한소수예요.',
+ `기약분수로 나타내면 ${fh(r)}이고 분모 ${r.d} = ${factStr(r.d)}입니다. ${fin?'소인수가 2, 5뿐이므로 유한소수입니다.':'2, 5 이외의 소인수가 있으므로 순환소수(무한소수)입니다.'}`)}],
+[[2],L=>{let list;do{list=[];const used=new Set();while(list.length<4){const den=ri(6,90),n=ri(1,den-1);const k=n/den;if(used.has(k)||gcd(n,den)===den)continue;used.add(k);list.push([n,den])}}while(list.filter(([n,d])=>isFin(n,d)).length!==1);
+ const right=list.find(([n,d])=>isFin(n,d));const rs=x=>fr(x[0],x[1]);
+ return CH('다음 중 유한소수로 나타낼 수 있는 분수는?',rs(right),list.filter(x=>x!==right).map(rs),
+ '각 분수를 기약분수로 만든 뒤 분모의 소인수가 2와 5뿐인 것을 찾아요.',
+ list.map(([n,d])=>{const r=F(n,d);return `${fh(r)}: 분모 ${r.d} = ${factStr(r.d)}`}).join(' / ')+' → 분모의 소인수가 2, 5뿐인 것이 정답입니다.')}],
+[[1,2,3],L=>{let txt,fra;
+ if(L===1){const a=ri(1,9),b=ri(0,9);txt=`0.${dt(a)}${dt(b)}`;fra=F(10*a+b,99)}
+ else if(L===2){const a=ri(1,9),b=ri(1,9);txt=`0.${a}${dt(b)}`;fra=F(9*a+b,90)}
+ else{const a=ri(1,9),b=ri(0,9),c=ri(1,9);txt=`0.${a}${dt(b)}${dt(c)}`;fra=F(100*a+10*b+c-a,990)}
+ const ex=L===1?'(두 자리가 계속 반복)':L===2?'(마지막 한 자리만 계속 반복)':'(뒤의 두 자리가 계속 반복)';
+ return NUM(`순환소수 ${txt} ${ex}을 기약분수 <i>p</i>/<i>q</i> 로 나타낼 때, <i>p</i> + <i>q</i> 의 값은?`,fra.n+fra.d,
+ L===1?'x = 0.ab ab… 로 놓고 100x − x 를 계산해 보세요.':'x로 놓고 10배, 100배, 1000배 한 식의 차로 소수 부분을 없애요.',
+ `분수로 나타내면 ${fh(fra)} 이므로 p + q = ${fra.n} + ${fra.d} = ${fra.n+fra.d}.`)}],
+[[2,3],L=>{const q=pick([7,11,13,27,37]);let p;do{p=ri(1,q-1)}while(gcd(p,q)!==1);
+ const digs=[];let r=p%q;for(let i=0;i<120;i++){r*=10;digs.push(Math.floor(r/q));r%=q}
+ let per=0,rr=p%q,seen={};while(!(rr in seen)){seen[rr]=per;rr=(rr*10)%q;per++}
+ if(L===2){const n=ri(15,60);return NUM(`${fr(p,q)} 을(를) 소수로 나타낼 때, 소수점 아래 ${n}번째 자리의 숫자는?`,digs[n-1],
+ '순환마디를 찾고, n번째 숫자가 마디의 몇 번째인지 나머지로 알아봐요.',`순환마디는 ${digs.slice(0,per).join('')} (${per}자리)입니다. ${n} ÷ ${per}의 나머지로 위치를 찾으면 ${digs[n-1]}입니다.`)}
+ const n=ri(20,80);const sum=digs.slice(0,n).reduce((a,b)=>a+b,0);
+ return NUM(`${fr(p,q)} 을(를) 소수로 나타낼 때, 소수점 아래 첫째 자리부터 ${n}번째 자리까지 숫자를 모두 더한 값은?`,sum,
+ '순환마디의 숫자 합을 먼저 구하고, 마디가 몇 번 반복되는지 세어 보세요.',`순환마디는 ${digs.slice(0,per).join('')}이고 한 마디의 합은 ${digs.slice(0,per).reduce((a,b)=>a+b,0)}입니다. ${n}자리까지 더하면 ${sum}입니다.`)}],
+[[2,3],L=>{if(L===2){const a=ri(1,3),b=ri(0,2),p=pick([3,7,11,13]);const D=2**a*5**b*p;
+ const parts=[`2${a>1?SUP(a):''}`];if(b)parts.push(`5${b>1?SUP(b):''}`);parts.push(p);
+ return NUM(`분수 <i>n</i>/(${parts.join(' × ')}) 이(가) 유한소수가 되도록 하는 가장 작은 자연수 <i>n</i>은?`,p,
+ '분모에서 2와 5 이외의 소인수를 약분으로 없애야 해요.',`분모 ${D}의 소인수 중 ${p}를 없애려면 n이 ${p}의 배수여야 합니다. 가장 작은 n = ${p}.`)}
+ const m=pick([21,33,39,63,77]),a=ri(1,2),b=ri(0,1);const D=2**a*5**b*m;let cnt=0;for(let n=10;n<=99;n++)if(isFin(n,D))cnt++;
+ return NUM(`분수 <i>n</i>/${D} 이(가) 유한소수가 되도록 하는 두 자리 자연수 <i>n</i>은 모두 몇 개인가요?`,cnt,
+ `${D}를 소인수분해해서 2, 5 이외의 소인수를 확인하세요.`,`${D} = ${factStr(D)}. n이 ${m}의 배수이면 유한소수가 되고, 두 자리 ${m}의 배수는 ${cnt}개입니다.`)}],
+];
+
+// M2-02 식의 계산
+U['M2-02']=[
+[[1],L=>{const a=ri(2,9),b=ri(2,9),c=ri(1,a+b-1);return NUM(`<i>x</i>${SUP(a)} × <i>x</i>${SUP(b)} ÷ <i>x</i>${SUP(c)} = <i>x</i>${SUP('□')} 일 때, □ 안에 알맞은 수는?`,a+b-c,
+ '곱하면 지수를 더하고, 나누면 지수를 빼요.',`${a} + ${b} − ${c} = ${a+b-c}`)}],
+[[2],L=>{if(rand()<.5){const a=ri(1,3),b=ri(1,3),c=ri(1,2);const ex=a+2*b;if(ex<3*c)return U['M2-02'][1][1](2);
+ return NUM(`2${SUP(a)} × 4${SUP(b)} ÷ 8${SUP(c)} = 2${SUP('□')} 일 때, □ 안에 알맞은 수는?`,ex-3*c,
+ '4 = 2², 8 = 2³ 으로 바꿔서 밑을 2로 통일하세요.',`2^${a} × 2^${2*b} ÷ 2^${3*c} = 2^(${a}+${2*b}−${3*c}) = 2^${ex-3*c}`)}
+ const a=ri(2,4),b=ri(2,3),c=ri(1,5),d=ri(1,4);const e=a*b-c+d;if(e<1)return U['M2-02'][1][1](2);
+ return NUM(`(<i>x</i>${SUP(a)})${SUP(b)} ÷ <i>x</i>${SUP(c)} × <i>x</i>${SUP(d)} = <i>x</i>${SUP('□')} 일 때, □ 안에 알맞은 수는?`,e,
+ '거듭제곱의 거듭제곱은 지수를 곱해요.',`${a}×${b} − ${c} + ${d} = ${e}`)}],
+[[2,3],L=>{const c=nz(-4,4),p=ri(1,3),q=ri(1,3),r=ri(2,3);const K=c**r;
+ return NUM(`(${par(c)}<i>x</i>${p>1?SUP(p):''}<i>y</i>${q>1?SUP(q):''})${SUP(r)} 을 간단히 했을 때, 계수와 <i>x</i>의 지수, <i>y</i>의 지수를 모두 더한 값은?`,K+p*r+q*r,
+ '괄호 안의 모든 것에 지수를 곱해 주세요. 계수는 거듭제곱해요.',`(${par(c)})^${r}=${K}, x의 지수 ${p*r}, y의 지수 ${q*r} → ${K} + ${p*r} + ${q*r} = ${K+p*r+q*r}`)}],
+[[2,3],L=>{let A,B,Cc,a,b,c,d,e,f;do{A=nz(-6,6);Cc=nz(1,4);const k=nz(-3,3);B=Cc*k/gcd(A,Cc)*1; B=nz(-6,6);a=ri(1,3);b=ri(1,3);c=ri(1,3);d=ri(1,3);e=ri(0,a+c);f=ri(0,b+d)}while((A*B)%Cc!==0);
+ const K=A*B/Cc,p=a+c-e,q=b+d-f;
+ const m=(co,x,y)=>`${co<0?'(−'+(-co)+')':co}${X('<i>x</i>',x)}${X('<i>y</i>',y)}`;
+ const mm=(co,x,y)=>(co===1?'':co===-1?'−':co)+X('<i>x</i>',x)+X('<i>y</i>',y);
+ const g=(co,x,y)=>{const s=mm(co,x,y);return `(${s||M(co)})`};
+ return NUM(`${g(A,a,b)} × ${g(B,c,d)} ÷ ${g(Cc,e,f)} 을 간단히 했을 때, 계수와 <i>x</i>의 지수, <i>y</i>의 지수를 모두 더한 값은?`,K+p+q,
+ '계수는 계수끼리, 문자는 문자끼리 계산해요.',`계수: ${A}×${B}÷${Cc} = ${K}, x의 지수 ${a}+${c}−${e} = ${p}, y의 지수 ${b}+${d}−${f} = ${q} → ${K+p+q}`)}],
+[[1,2,3],L=>{const r=()=>[nz(-5,5),nz(-6,6),nz(-7,7)];
+ const Ac=r(),Bc=r();const v=['<i>x</i>'+SUP(2),'<i>x</i>',''];
+ if(L===1){const w=ri(0,1)?1:-1;const idx=pick([[0,2],[1,2],[0,1]]);const res=Ac.map((c,i)=>c+w*Bc[i]);
+ return NUM(`<i>A</i> = ${poly(Ac,v)}, <i>B</i> = ${poly(Bc,v)} 일 때, <i>A</i> ${w>0?'+':'−'} <i>B</i> 를 계산하여 ${idx[0]===0?'<i>x</i>²':'<i>x</i>'}의 계수와 ${idx[1]===2?'상수항':'<i>x</i>의 계수'}의 합을 구하면?`,res[idx[0]]+res[idx[1]],
+ '같은 차수끼리 모아서 계산해요. 빼는 식은 괄호 안의 부호가 모두 바뀌어요.',`A ${w>0?'+':'−'} B = ${poly(res,v)}`)}
+ if(L===2){const k=ri(2,3),m=ri(2,3);const res=Ac.map((c,i)=>k*c-m*Bc[i]);
+ return NUM(`<i>A</i> = ${poly(Ac,v)}, <i>B</i> = ${poly(Bc,v)} 일 때, ${k}<i>A</i> − ${m}<i>B</i> 에서 <i>x</i>의 계수와 상수항의 합은?`,res[1]+res[2],
+ '먼저 각각 곱해서 괄호를 풀고, 같은 차수끼리 모아요.',`${k}A − ${m}B = ${poly(res,v)}`)}
+ const Cs=Ac.map((c,i)=>c+Bc[i]*(rand()<.5?1:2));
+ const X0=Ac.map((c,i)=>c);const w=ri(0,1)?1:2;const Cn=X0.map((c,i)=>c+w*Bc[i]); // 어떤 식 X=Ac, 잘못: X + wB = Cn?
+ // 어떤 식에서 B를 빼야 하는데 잘못하여 더했더니 Cn: 바른 결과 = X - B = Cn - 2B
+ const right=Cn.map((c,i)=>c-2*Bc[i]);
+ return NUM(`어떤 식에서 <i>B</i> = ${poly(Bc,v)} 를 빼야 할 것을 잘못하여 더했더니 ${poly(Cn,v)} 이(가) 되었다. 바르게 계산한 식에서 <i>x</i>²의 계수와 상수항의 합은?`,right[0]+right[2],
+ '먼저 어떤 식을 구하고, 다시 B를 빼 보세요.',`어떤 식 = (${poly(Cn,v)}) − (${poly(Bc,v)}) = ${poly(Cn.map((c,i)=>c-Bc[i]),v)}. 바른 계산: ${poly(right,v)}.`)}],
+[[2,3],L=>{const c=ri(2,4),u=nz(-4,5),v2=nz(-4,5),x0=ri(1,3),y0=nz(-3,3);
+ const A1=u*c,A2=v2*c;
+ if(L===2){const val=u*x0+v2*y0;
+ return NUM(`(${poly([A1,A2],['<i>x</i>²<i>y</i>','<i>xy</i>²'])}) ÷ ${c}<i>xy</i> 를 간단히 하고, <i>x</i> = ${x0}, <i>y</i> = ${M(y0)} 일 때의 값을 구하면?`,val,
+ '나눗셈은 각 항을 단항식으로 나눠요.',`= ${poly([u,v2],['<i>x</i>','<i>y</i>'])} 에 x=${x0}, y=${M(y0)}를 넣으면 ${val}.`)}
+ const m=nz(-3,3),n=nz(1,3),k=nz(-3,3);
+ const val=(A1*x0*x0*y0+A2*x0*y0*y0)/(c*x0*y0)-m*x0*(n*x0-k*y0);
+ return NUM(`(${poly([A1,A2],['<i>x</i>²<i>y</i>','<i>xy</i>²'])}) ÷ ${c}<i>xy</i> − ${m===1?'':m===-1?'(−1)':par(m)}<i>x</i>(${poly([n,-k],['<i>x</i>','<i>y</i>'])}) 에서 <i>x</i> = ${x0}, <i>y</i> = ${M(y0)} 일 때의 값은?`,val,
+ '앞의 나눗셈을 먼저, 뒤의 곱셈은 분배법칙으로 전개한 뒤 식을 간단히 해요.',`나눗셈: ${poly([u,v2],['<i>x</i>','<i>y</i>'])}, 곱셈 부분을 전개해 빼고 값을 대입하면 ${val}.`)}],
+];
+
+// M2-03 일차부등식
+const OPS=['<','≤','>','≥'];
+const oh=o=>o.replace('<','&lt;').replace('>','&gt;');
+const flipOp=o=>({'<':'>','≤':'≥','>':'<','≥':'≤'}[o]);
+const test=(l,o,r)=>o==='<'?l<r:o==='≤'?l<=r:o==='>'?l>r:l>=r;
+U['M2-03']=[
+[[1,2],L=>{for(;;){const a=nz(-5,5),b=ri(-12,12),c=ri(-15,15),op=pick(OPS);
+  const S=[];for(let x=-80;x<=80;x++)if(test(a*x+b,op,c))S.push(x);
+  const eff=a>0?op:flipOp(op);const up=eff==='<'||eff==='≤';
+  const ans=up?Math.max(...S):Math.min(...S);if(Math.abs(ans)>60||(S.length<3))continue;
+  if(L===1&&a<0)continue;
+  return NUM(`일차부등식 ${lin(a,b)} ${oh(op)} ${M(c)} 을(를) 만족하는 정수 <i>x</i> 중 가장 ${up?'큰':'작은'} 값은?`,ans,
+  '부등식의 양변에 음수를 곱하거나 나누면 부등호의 방향이 바뀌어요.',`해를 구하면 x ${oh(eff)} ${fs(F(c-b,a))} 정도의 범위이고, 이를 만족하는 정수 중 가장 ${up?'큰':'작은'} 값은 ${ans}입니다.`)}}],
+[[2],L=>{for(;;){const a=nz(-5,5),b=ri(-10,10),c=nz(-5,5),d=ri(-10,10),op=pick(OPS);if(a===c)continue;
+  const S=[];for(let x=-80;x<=80;x++)if(test(a*x+b,op,c*x+d))S.push(x);
+  const e=a-c;const eff=e>0?op:flipOp(op);const up=eff==='<'||eff==='≤';const ans=up?Math.max(...S):Math.min(...S);if(Math.abs(ans)>60||S.length<3)continue;
+  return NUM(`${lin(a,b)} ${oh(op)} ${poly([c,d],['x',''])} 을(를) 만족하는 정수 <i>x</i> 중 가장 ${up?'큰':'작은'} 값은?`,ans,
+  'x가 있는 항은 한쪽으로, 숫자는 반대쪽으로 모아서 정리해요.',`이항하여 정리하면 ${poly([e],['x'])} ${oh(op)} ${d-b}. 계수 ${e}의 부호에 주의하여 풀면 가장 ${up?'큰':'작은'} 정수는 ${ans}.`)}}],
+[[1,2],L=>{const a=ri(3,12)*100,b=ri(1,6)*500,M0=ri(5,12)*1000+b;const ans=Math.floor((M0-b)/a);
+  return NUM(`한 개에 ${a}원인 빵을 <i>x</i>개 사고 ${b}원짜리 음료수 한 병을 사려고 합니다. 전체 금액을 ${M0}원 이하로 하려면 빵을 최대 몇 개까지 살 수 있을까요?`,ans,
+  `${a}x + ${b} ≤ ${M0} 으로 식을 세워요.`,`${a}x + ${b} ≤ ${M0} → x ≤ ${(M0-b)/a} → 최대 ${ans}개`)}],
+[[3],L=>{for(;;){const A=ri(5,20)*1000,b=ri(2,6)*500,C=ri(1,10)*1000,d=ri(1,4)*500;if(b<=d||A>=C)continue;
+  let x=1;while(A+b*x<=C+d*x)x++;if(x>60)continue;
+  return NUM(`지민이는 현재 ${A}원이 있고 매달 ${b}원씩 저금하며, 동생은 현재 ${C}원이 있고 매달 ${d}원씩 저금합니다. 지민이의 저금액이 동생보다 처음으로 많아지는 것은 몇 달 후일까요? `,x,
+  'x달 후 두 사람의 저금액을 식으로 쓰고 부등식을 세워요.',`${A} + ${b}x > ${C} + ${d}x → ${b-d}x > ${C-A}. 이를 만족하는 가장 작은 자연수 x = ${x}.`)}}],
+[[3],L=>{for(;;){const a1=nz(-4,4),b1=ri(-8,8),c1=ri(-12,12),o1=pick(OPS),a2=nz(-4,4),b2=ri(-8,8),c2=ri(-12,12),o2=pick(OPS);
+  const S=[];for(let x=-60;x<=60;x++)if(test(a1*x+b1,o1,c1)&&test(a2*x+b2,o2,c2))S.push(x);
+  const e1=a1>0?o1:flipOp(o1),e2=a2>0?o2:flipOp(o2);const u1=e1==='<'||e1==='≤',u2=e2==='<'||e2==='≤';if(u1===u2)continue;
+  if(S.length<2||S.length>8||Math.min(...S)<-55||Math.max(...S)>55)continue;
+  return NUM(`연립부등식 { ${lin(a1,b1)} ${oh(o1)} ${M(c1)}, ${lin(a2,b2)} ${oh(o2)} ${M(c2)} } 을(를) 동시에 만족하는 정수 <i>x</i>는 모두 몇 개인가요?`,S.length,
+  '각 부등식을 따로 풀고 공통 범위를 수직선에 나타내 보세요.',`공통 범위의 정수는 ${S.join(', ')} 이므로 ${S.length}개입니다.`)}}],
+[[1],L=>{const k=pick([-4,-3,-2,2,3,4]),m=ri(-6,6);const right=k>0?'&lt;':'&gt;';
+  return CH(`<i>a</i> &lt; <i>b</i> 일 때, ${M(k)}<i>a</i> ${sgn(m)} □ ${M(k)}<i>b</i> ${sgn(m)} 에서 □ 안에 알맞은 부등호는?`,right,['&lt;','&gt;','=','알 수 없다'].filter(x=>x!==right),
+  '부등식의 양변에 같은 수를 더하면 방향이 그대로이고, 음수를 곱하면 방향이 바뀌어요.',`a &lt; b의 양변에 ${M(k)}를 곱하면 ${k>0?'방향 그대로':'방향이 바뀌어'} ${right}, 같은 수를 더해도 방향은 같습니다.`)}],
+];
+
+// M2-04 연립일차방정식
+const sys=(a,b,c)=>`${poly([a,b],['<i>x</i>','<i>y</i>'])} = ${M(c)}`;
+U['M2-04']=[
+[[1],L=>{const x=nz(-6,8),y=nz(-6,8);return NUM(`연립방정식 { ${sys(1,1,x+y)}, ${sys(1,-1,x-y)} } 의 해에서 <i>x</i>의 값은?`,x,'두 식을 더하면 y가 없어져요.',`두 식을 더하면 2x = ${2*x} → x = ${x}, y = ${y}`)}],
+[[2],L=>{for(;;){const x=nz(-6,6),y=nz(-6,6),a=nz(-4,5),b=nz(-4,5),c=nz(-4,5),d=nz(-4,5);if(a*d-b*c===0)continue;
+  const w=pick(['x+y','x-y','xy']);const v=w==='x+y'?x+y:w==='x-y'?x-y:x*y;
+  return NUM(`연립방정식 { ${sys(a,b,a*x+b*y)}, ${sys(c,d,c*x+d*y)} } 의 해를 (<i>x</i>, <i>y</i>)라 할 때, ${w==='xy'?'<i>x</i> × <i>y</i>':w==='x+y'?'<i>x</i> + <i>y</i>':'<i>x</i> − <i>y</i>'}의 값은?`,v,
+  '가감법: 한 문자의 계수를 같게 만들어 두 식을 더하거나 빼요.',`해는 x = ${x}, y = ${y} 이므로 ${w} = ${v}`)}}],
+[[3],L=>{for(;;){const a=nz(-5,5),b=nz(-5,5),p=nz(-4,4),q=nz(-4,4);
+  const m=a*p+b*q,n=b*p-a*q;
+  return NUM(`연립방정식 { <i>ax</i> + <i>by</i> = ${M(m)}, <i>bx</i> − <i>ay</i> = ${M(n)} } 의 해가 <i>x</i> = ${M(p)}, <i>y</i> = ${M(q)} 일 때, 상수 <i>a</i> + <i>b</i> 의 값은?`,a+b,
+  '해를 두 식에 대입하면 a, b에 대한 연립방정식이 돼요.',`대입: ${par(p)}a + ${par(q)}b = ${m}, ${par(p)}b − ${par(q)}a = ${n}. 풀면 a = ${a}, b = ${b} → a + b = ${a+b}`)}}],
+[[1,2],L=>{const x=ri(2,15),y=ri(2,15);if(x===y)return U['M2-04'][3][1](L);return NUM(`닭과 토끼가 모두 ${x+y}마리 있고, 다리의 수는 모두 ${2*x+4*y}개입니다. 토끼는 몇 마리일까요?`,y,'닭 x마리, 토끼 y마리로 놓고 머리 수와 다리 수로 식을 세워요.',`x + y = ${x+y}, 2x + 4y = ${2*x+4*y} → 토끼 y = ${y}`)}],
+[[2,3],L=>{for(;;){const u=ri(3,9)*100,v=ri(4,15)*100,a=ri(1,5),b=ri(1,5),c=ri(1,5),d=ri(1,5);if(a*d-b*c===0)continue;
+  const ask=rand()<.5?'연필 한 자루':'공책 한 권';const ans=ask==='연필 한 자루'?u:v;
+  return NUM(`연필 ${a}자루와 공책 ${b}권의 값은 ${a*u+b*v}원이고, 연필 ${c}자루와 공책 ${d}권의 값은 ${c*u+d*v}원입니다. ${ask}의 값은 얼마일까요? (원)`,ans,'연필 한 자루를 x원, 공책 한 권을 y원으로 놓아요.',`${a}x + ${b}y = ${a*u+b*v}, ${c}x + ${d}y = ${c*u+d*v} → x = ${u}, y = ${v}`)}}],
+[[3],L=>{const s=ri(8,14),y=ri(2,6),m=pick([2,3,4]);const f=m*(s+y)-y;
+  return NUM(`현재 아버지와 아들의 나이의 합은 ${f+s}살이고, ${y}년 후에는 아버지의 나이가 아들의 나이의 ${m}배가 됩니다. 현재 아버지의 나이는 몇 살일까요?`,f,'현재 아버지 x살, 아들 y살로 놓고 두 조건을 식으로 써요.',`x + y = ${f+s}, x + ${y} = ${m}(y + ${y}) → x = ${f}, y = ${s}`)}],
+[[3],L=>{const c0=ri(2,4),a=ri(2,5),m=ri(2,4);const k=ri(1,6),mt=m;
+  // x + a y = m0 ; c x + (c a) y = P  -> 해가 무수히 많으면 P = c m0
+  const m0=ri(2,9),N=c0*a;
+  return NUM(`연립방정식 { <i>x</i> + <i>ay</i> = ${m0}, ${c0}<i>x</i> + ${N}<i>y</i> = <i>b</i> } 의 해가 무수히 많을 때, 상수 <i>a</i> + <i>b</i> 의 값은?`,a+c0*m0,
+  '해가 무수히 많으려면 두 식이 같은 식이어야 해요(한 식에 몇 배를 한 것).',`첫째 식에 ${c0}를 곱하면 ${c0}x + ${c0}ay = ${c0*m0}. 따라서 ${c0}a = ${N} → a = ${a}, b = ${c0*m0}. a + b = ${a+c0*m0}`)}],
+];
+
+// M2-05 일차함수와 그래프
+U['M2-05']=[
+[[1],L=>{const a=nz(-5,5),x1=ri(-4,3),x2=x1+ri(1,4),b=ri(-6,6);const y1=a*x1+b,y2=a*x2+b;
+  return NUM(`두 점 (${M(x1)}, ${M(y1)}), (${M(x2)}, ${M(y2)}) 를 지나는 직선의 기울기는?`,a,'(기울기) = (y의 증가량) ÷ (x의 증가량)',`(${y2} − ${par(y1)}) ÷ (${x2} − ${par(x1)}) = ${a}`)}],
+[[1,2],L=>{const p=nz(-6,6),a=nz(-4,4);const b=-a*p;const w=pick(['x','y']);
+  return NUM(`일차함수 <i>y</i> = ${lin(a,b)} 의 그래프의 ${w==='x'?'<i>x</i>절편':'<i>y</i>절편'}은?`,w==='x'?p:b,w==='x'?'y = 0 을 대입해 보세요.':'x = 0 을 대입해 보세요.',w==='x'?`0 = ${lin(a,b).replace(/<[^>]*>/g,'')} → x = ${p}`:`x = 0 이면 y = ${b}`)}],
+[[2],L=>{const a=nz(-4,4),b=ri(-8,8),p=ri(-3,3),r=p+ri(1,4),t=ri(-4,5);if(t===p||t===r)return U['M2-05'][2][1](2);
+  return NUM(`일차함수 <i>f</i>(<i>x</i>) = <i>ax</i> + <i>b</i> 에서 <i>f</i>(${M(p)}) = ${M(a*p+b)}, <i>f</i>(${M(r)}) = ${M(a*r+b)} 일 때, <i>f</i>(${M(t)})의 값은?`,a*t+b,'두 값의 차이로 기울기 a를 먼저 구해요.',`a = ${a}, b = ${b} → f(${t}) = ${a*t+b}`)}],
+[[2],L=>{const a=pick([-3,-2,-1,1,2,3]),p=nz(-5,5),k=nz(-5,5);const b2=-a*p,b=b2-k;
+  return NUM(`일차함수 <i>y</i> = ${lin(a,b)} 의 그래프를 <i>y</i>축의 방향으로 ${M(k)}만큼 평행이동한 그래프의 <i>x</i>절편은?`,p,'y축 방향으로 k만큼 평행이동하면 식 끝에 k를 더해요.',`평행이동한 식: y = ${lin(a,b2).replace(/<[^>]*>/g,'')} → y = 0 이면 x = ${p}`)}],
+[[2],L=>{for(;;){const a=nz(-4,4),b=nz(-6,6);const pos=(a>0?'+':'-')+(b>0?'+':'-');
+  const not={'++':4,'+-':2,'-+':3,'--':1}[pos];
+  return CH(`일차함수 <i>y</i> = ${lin(a,b)} 의 그래프가 지나지 않는 사분면은?`,`제${not}사분면`,[1,2,3,4].filter(q=>q!==not).map(q=>`제${q}사분면`),
+  '기울기의 부호와 y절편의 부호로 그래프의 대략적인 모양을 그려 보세요.',`기울기 ${a>0?'양수':'음수'}, y절편 ${b>0?'양수':'음수'}이므로 제${not}사분면을 지나지 않습니다.`)}}],
+[[1],L=>{const a=nz(-5,5),d=ri(2,6),x1=ri(-3,3);return NUM(`일차함수 <i>y</i> = ${lin(a,ri(-5,5))} 에서 <i>x</i>의 값이 ${M(x1)}에서 ${M(x1+d)}까지 증가할 때, <i>y</i>의 값은 얼마나 증가하나요? (감소하면 음수)`.replace(/y<\/i> = .*? 에서/,m=>m),a*d,'(y의 증가량) = (기울기) × (x의 증가량)',`${a} × ${d} = ${a*d}`)}],
+[[3],L=>{for(;;){const a=pick([-4,-2,-1,1,2,4]),p=nz(-6,6);const b=-a*p;const area=F(Math.abs(p*b),2);
+  return NUM(`일차함수 <i>y</i> = ${lin(a,b)} 의 그래프와 <i>x</i>축, <i>y</i>축으로 둘러싸인 삼각형의 넓이는? (분수는 3/2 처럼 써도 돼요)`,area,'x절편과 y절편의 절댓값이 삼각형의 밑변과 높이예요.',`x절편 ${p}, y절편 ${b} → 넓이 = ½ × ${Math.abs(p)} × ${Math.abs(b)} = ${fs(area)}`)}}],
+[[2,3],L=>{const a=nz(-4,4),x1=ri(-3,3),x2=x1+ri(1,3),b=ri(-8,8);
+  if(L===2||true){const bb=b;return NUM(`일차함수의 그래프가 두 점 (${M(x1)}, ${M(a*x1+bb)}), (${M(x2)}, ${M(a*x2+bb)}) 를 지날 때, 이 그래프의 <i>y</i>절편은?`,bb,'기울기를 구한 뒤 한 점을 y = ax + b에 대입해요.',`기울기 ${a}, ${M(a*x1+bb)} = ${a}×${par(x1)} + b → b = ${bb}`)}}],
+[[3],L=>{const a=nz(-4,4),b=ri(-6,6),p=ri(-4,4),q=ri(-6,6);const nb=q-a*p;
+  return NUM(`일차함수 <i>y</i> = ${lin(a,b)} 의 그래프와 평행하고 점 (${M(p)}, ${M(q)}) 를 지나는 직선의 <i>y</i>절편은?`,nb,'평행한 직선은 기울기가 같아요.',`y = ${a}x + b 에 (${p}, ${q}) 대입 → b = ${nb}`)}],
+];
+
+// M2-06 일차함수와 일차방정식의 관계
+const eq2=(a,b,c)=>`${poly([a,b],['<i>x</i>','<i>y</i>'])} = ${M(c)}`;
+U['M2-06']=[
+[[1,2],L=>{const b=pick([-3,-2,-1,1,2,3]),m=nz(-4,4),a=-m*b;const k=ri(-4,4);const c=b*k;
+  if(L===1)return NUM(`일차방정식 ${eq2(a,b,c)} 의 그래프의 기울기는?`,m,'y에 대해 풀어서 y = (기울기)x + (y절편) 꼴로 고쳐요.',`y = ${m}x + ${k} 이므로 기울기는 ${m}`);
+  return NUM(`일차방정식 ${eq2(a,b,c)} 의 그래프의 기울기와 <i>y</i>절편의 합은?`,m+k,'y에 대해 풀어서 y = (기울기)x + (y절편) 꼴로 고쳐요.',`y = ${m}x + ${k} → ${m} + ${k} = ${m+k}`)}],
+[[2,3],L=>{for(;;){const p=ri(-4,5),q=ri(-6,6),a1=nz(-3,3),a2=nz(-3,3);if(a1===a2)continue;const b1=q-a1*p;
+  if(L===2){const b2=q-a2*p;return NUM(`두 일차함수 <i>y</i> = ${lin(a1,b1)}, <i>y</i> = ${lin(a2,b2)} 의 그래프의 교점의 좌표를 (<i>a</i>, <i>b</i>)라 할 때, <i>a</i> + <i>b</i> 의 값은?`,p+q,'두 식을 연립해서 풀면 교점의 좌표가 나와요.',`교점은 (${p}, ${q}) → ${p+q}`)}
+  const u=nz(-4,4),v=nz(-4,4),w=u*p+v*q;if(-u/v===a1)continue;
+  return NUM(`일차함수 <i>y</i> = ${lin(a1,b1)} 의 그래프와 일차방정식 ${eq2(u,v,w)} 의 그래프의 교점의 좌표를 (<i>a</i>, <i>b</i>)라 할 때, <i>a</i> + <i>b</i> 의 값은?`,p+q,'일차함수와 일차방정식의 그래프의 교점은 연립방정식의 해와 같아요.',`연립하면 x = ${p}, y = ${q} → ${p+q}`)}}],
+[[2],L=>{const a=nz(-4,4),k=nz(-4,4),p=nz(-3,3),q=nz(-3,3),c=a*p+k*q;
+  return NUM(`직선 ${poly([a,k],['<i>x</i>','<i>ky</i>']).replace('<i>ky</i>',Math.abs(k)===1?'<i>y</i>':'')}`.length?`직선 ${a===1?'':a===-1?'−':a}<i>x</i> + <i>ky</i> = ${M(c)} 가 점 (${M(p)}, ${M(q)}) 를 지날 때, 상수 <i>k</i>의 값은?`:'',k,'점의 좌표를 식에 대입하면 k에 대한 방정식이 돼요.',`${a}×${par(p)} + k×${par(q)} = ${c} → k = ${k}`)}],
+[[3],L=>{const m=ri(2,4),a1=nz(-3,4),b1=nz(-3,4),c1=nz(-6,6),n=ri(-9,9);
+  // a1 x + b1 y = c1 ; k x + m*b1 y = n  (m a1 = k) 해가 없으려면 k=m a1, n != m c1
+  let nn=n;if(nn===m*c1)nn+=1;
+  return NUM(`연립방정식 { ${eq2(a1,b1,c1)}, <i>kx</i> ${b1*m<0?'−':'+'} ${Math.abs(b1*m)===1?'':Math.abs(b1*m)}<i>y</i> = ${M(nn)} } 의 해가 없을 때, 상수 <i>k</i>의 값은?`,m*a1,
+  '해가 없으면 두 직선이 평행해요(기울기는 같고 y절편은 달라요).',`y의 계수가 ${m}배이므로 x의 계수도 ${m}배: k = ${m}×${a1} = ${m*a1} (상수항은 ${m*c1}과 달라서 해가 없음)`)}],
+[[3],L=>{for(;;){const a1=nz(-3,3),a2=nz(-3,3),b1=nz(-5,5),b2=nz(-5,5);if(a1===a2||b1===b2)continue;
+  const p=(b2-b1)/(a1-a2);if(!Number.isInteger(p)||p===0)continue;const area=F(Math.abs(b1-b2)*Math.abs(p),2);
+  return NUM(`두 일차함수 <i>y</i> = ${lin(a1,b1)}, <i>y</i> = ${lin(a2,b2)} 의 그래프와 <i>y</i>축으로 둘러싸인 삼각형의 넓이는? (분수는 5/2 처럼 써도 돼요)`,area,'두 직선의 교점의 x좌표가 높이, y절편의 차가 밑변이에요.',`교점의 x좌표 ${p}, 밑변 |${b1} − ${par(b2)}| = ${Math.abs(b1-b2)} → 넓이 = ${fs(area)}`)}}],
+];
+
+// M2-07 삼각형의 성질
+U['M2-07']=[
+[[1],L=>{const w=pick([0,1]);if(w){const t=ri(2,17)*2+0;const ang=2*ri(10,40);return NUM(`삼각형 ABC에서 AB = AC 이고 ∠A = ${180-2*ang}° 일 때, ∠B의 크기는? (°)`,ang,'이등변삼각형의 두 밑각의 크기는 같아요.',`(180° − ${180-2*ang}°) ÷ 2 = ${ang}°`)}
+  const bc=2*ri(3,12);return NUM(`삼각형 ABC에서 AB = AC 이고, ∠A의 이등분선이 변 BC와 만나는 점을 D라 하자. BC = ${bc} 일 때, BD의 길이는?`,bc/2,'이등변삼각형의 꼭지각의 이등분선은 밑변을 수직이등분해요.',`BD = BC ÷ 2 = ${bc/2}`)}],
+[[1],L=>{const b=ri(35,80);return NUM(`삼각형 ABC에서 AB = AC, ∠B = ${b}° 이다. 변 BC의 연장선 위에 점 D를 잡을 때, ∠ACD의 크기는? (°)`,180-b,'∠ACB = ∠B 이고, ∠ACD는 ∠ACB의 보각(합이 180°)이에요.',`∠ACB = ${b}°, ∠ACD = 180° − ${b}° = ${180-b}°`)}],
+[[1,2],L=>{const c=2*ri(3,15);return NUM(`∠A = 90° 인 직각삼각형 ABC에서 빗변 BC의 길이가 ${c} 일 때, 이 삼각형의 외접원의 반지름은?`,c/2,'직각삼각형의 외심은 빗변의 중점이에요.',`외접원의 반지름 = 빗변의 ½ = ${c/2}`)}],
+[[2],L=>{if(rand()<.5){const a=ri(25,85);return NUM(`예각삼각형 ABC의 외심을 O라 하자. ∠A = ${a}° 일 때, ∠BOC의 크기는? (°)`,2*a,'(중심각) = 2 × (원주각)이에요.',`∠BOC = 2 × ${a}° = ${2*a}°`)}
+  const a=ri(25,85);return NUM(`예각삼각형 ABC의 외심을 O라 하자. ∠BOC = ${2*a}° 일 때, ∠A의 크기는? (°)`,a,'외심에서의 ∠BOC는 ∠A의 2배예요.',`∠A = ${2*a}° ÷ 2 = ${a}°`)}],
+[[2],L=>{const a=2*ri(15,40);return NUM(`삼각형 ABC의 내심을 I라 하자. ∠A = ${a}° 일 때, ∠BIC의 크기는? (°)`,90+a/2,'내심 I에서 ∠BIC = 90° + ½∠A 예요.',`90° + ${a}° ÷ 2 = ${90+a/2}°`)}],
+[[3],L=>{const b=2*ri(15,40),c=2*ri(15,40);return NUM(`삼각형 ABC의 내심을 I라 하자. ∠B = ${b}°, ∠C = ${c}° 일 때, ∠BIC의 크기는? (°)`,180-b/2-c/2,'내심은 각의 이등분선의 교점이라 ∠IBC = ½∠B, ∠ICB = ½∠C예요.',`∠IBC = ${b/2}°, ∠ICB = ${c/2}° → ∠BIC = 180° − ${b/2}° − ${c/2}° = ${180-b/2-c/2}°`)}],
+[[3],L=>{const y=ri(15,40);return NUM(`예각삼각형 ABC의 외심을 O라 하자. ∠OBC = ${y}° 일 때, ∠A의 크기는? (°)`,90-y,'삼각형 OBC는 OB = OC인 이등변삼각형이에요.',`∠BOC = 180° − 2×${y}° = ${180-2*y}°, ∠A = ${180-2*y}° ÷ 2 = ${90-y}°`)}],
+[[2,3],L=>{const r=ri(2,6),P=2*ri(5,15);const S=r*P/2;return NUM(`삼각형 ABC의 내접원의 반지름의 길이가 ${r}, 삼각형의 세 변의 길이의 합이 ${P} 일 때, 삼각형 ABC의 넓이는?`,S,'(삼각형의 넓이) = ½ × (내접원의 반지름) × (세 변의 길이의 합)',`½ × ${r} × ${P} = ${S}`)}],
+[[3],L=>{const t=pick([[3,4,5],[5,12,13],[8,15,17]]),k=ri(1,3);const [a,b,c]=t.map(v=>v*k);return NUM(`∠C = 90° 인 직각삼각형 ABC에서 BC = ${a}, CA = ${b}, AB = ${c} 일 때, 내접원의 반지름의 길이는?`,(a+b-c)/2,'내접원의 반지름을 r이라 하면 넓이 = ½r(a+b+c) = ½ab 예요.',`r = ab ÷ (a+b+c) = ${a*b} ÷ ${a+b+c} = ${(a+b-c)/2}`)}],
+];
+
+// M2-08 사각형의 성질
+U['M2-08']=[
+[[1],L=>{const A=pick([55,60,65,70,75,80,100,110,120,125]);const w=pick(['B','C','D']);const v=w==='C'?A:180-A;
+  return NUM(`평행사변형 ABCD에서 ∠A = ${A}° 일 때, ∠${w}의 크기는? (°)`,v,'평행사변형은 이웃한 두 각의 합이 180°, 마주 보는 각은 크기가 같아요.',`∠${w} = ${v}°`)}],
+[[2],L=>{for(;;){const x=ri(2,9),a=ri(2,5),c=ri(1,4);if(a===c)continue;const b=ri(0,6);const d=a*x+b-c*x;if(a*x+b<=0)continue;
+  return NUM(`평행사변형 ABCD의 두 대각선의 교점을 O라 하자. AO = ${poly([a,b],['x',''])}, CO = ${poly([c,d],['x',''])} 일 때, 대각선 AC의 길이는?`,2*(a*x+b),'평행사변형은 두 대각선이 서로 다른 것을 이등분해요(AO = CO).',`${poly([a,b],['x','']).replace(/<[^>]*>/g,'')} = ${poly([c,d],['x','']).replace(/<[^>]*>/g,'')} → x = ${x}, AO = ${a*x+b}, AC = ${2*(a*x+b)}`)}}],
+[[2],L=>{const [a,b,c]=scTri();if(rand()<.5)return NUM(`가로의 길이가 ${a}, 세로의 길이가 ${b}인 직사각형의 대각선의 길이는?`,c,'직사각형의 대각선과 두 변은 직각삼각형을 이뤄요(피타고라스 정리).',`√(${a}² + ${b}²) = ${c}`);
+  return NUM(`두 대각선의 길이가 ${2*a}와 ${2*b}인 마름모의 둘레의 길이는?`,4*c,'마름모의 두 대각선은 서로 수직이등분해요. 한 변은 대각선의 절반 둘로 이루어진 직각삼각형의 빗변이에요.',`한 변 = √(${a}² + ${b}²) = ${c}, 둘레 = 4 × ${c} = ${4*c}`)}],
+[[1],L=>{const a=ri(3,10),b=a+ri(2,8),h=ri(2,8);const S=F((a+b)*h,2);return NUM(`윗변이 ${a}, 아랫변이 ${b}, 높이가 ${h}인 사다리꼴의 넓이는? (분수는 7/2 처럼 써도 돼요)`,S,'(사다리꼴의 넓이) = ½ × (윗변 + 아랫변) × (높이)',`½ × (${a} + ${b}) × ${h} = ${fs(S)}`)}],
+[[1],L=>{const B=pick([55,60,65,70,75,80,100,110]);return NUM(`AD ∥ BC 인 등변사다리꼴 ABCD에서 ∠B = ${B}° 일 때, ∠A의 크기는? (°)`,180-B,'AD ∥ BC이므로 ∠A + ∠B = 180° (동측내각)예요.',`∠A = 180° − ${B}° = ${180-B}°`)}],
+[[2],L=>{const v=ri(0,2);
+  if(v===0)return CH('평행사변형 ABCD가 직사각형이 되기 위한 조건은?','AC = BD',['AB = BC','AC ⊥ BD','AB = CD'],'직사각형은 네 각이 모두 직각이고 두 대각선의 길이가 같아요.','대각선의 길이가 같으면 직사각형입니다. AB = BC, AC ⊥ BD는 마름모가 되는 조건이고, AB = CD는 평행사변형이면 항상 성립합니다.');
+  if(v===1)return CH('평행사변형 ABCD가 마름모가 되기 위한 조건은?','AB = BC',['AC = BD','∠A = 90°','AB = CD'],'마름모는 네 변의 길이가 모두 같아요.','이웃한 두 변의 길이가 같으면 마름모입니다. AC = BD와 ∠A = 90°는 직사각형 조건입니다.');
+  return CH('직사각형 ABCD가 정사각형이 되기 위한 조건은?','AC ⊥ BD',['AC = BD','∠A = 90°','AB ∥ CD'],'직사각형에 마름모의 성질을 더하면 정사각형이에요.','직사각형은 AC = BD, ∠A = 90°, AB ∥ CD를 이미 만족합니다. 대각선이 수직이거나 이웃한 변이 같으면 정사각형입니다.')}],
+[[2],L=>{const S=4*ri(3,20);return NUM(`평행사변형 ABCD의 넓이가 ${S}이고 두 대각선의 교점이 O일 때, 삼각형 OAB의 넓이는?`,S/4,'두 대각선은 평행사변형의 넓이를 4등분해요.',`${S} ÷ 4 = ${S/4}`)}],
+[[3],L=>{const d=2*ri(2,9);return NUM(`대각선의 길이가 ${d}인 정사각형의 넓이는?`,d*d/2,'정사각형의 넓이 = ½ × (대각선의 길이)² 예요(마름모의 넓이 공식).',`½ × ${d}² = ${d*d/2}`)}],
+[[3],L=>{const d1=2*ri(2,8),S=d1*ri(2,9);return NUM(`마름모의 넓이가 ${S}이고 한 대각선의 길이가 ${d1}일 때, 다른 대각선의 길이는?`,2*S/d1,'(마름모의 넓이) = ½ × (두 대각선의 곱)',`다른 대각선 = 2 × ${S} ÷ ${d1} = ${2*S/d1}`)}],
+[[3],L=>{const [a,b,c]=scTri();return NUM(`마름모의 둘레가 ${4*c}이고 한 대각선의 길이가 ${2*a}일 때, 이 마름모의 넓이는?`,2*a*b,'마름모의 한 변은 둘레의 ¼이고, 두 대각선은 수직이등분해요.',`한 변 ${c}, 대각선의 반 ${a} → 다른 대각선의 반 ${b}. 넓이 = ½ × ${2*a} × ${2*b} = ${2*a*b}`)}],
+];
+
+// M2-09 도형의 닮음
+U['M2-09']=[
+[[1],L=>{const m=ri(1,4),n=m+ri(1,3),t=ri(1,6);return NUM(`△ABC ∽ △DEF 이고 닮음비가 ${m} : ${n}이다. AB = ${m*t} 일 때, 대응변 DE의 길이는?`,n*t,'닮음비는 대응변의 길이의 비예요.',`AB : DE = ${m} : ${n} → DE = ${m*t} × ${n}/${m} = ${n*t}`)}],
+[[2],L=>{const [m,n]=pick([[1,2],[2,3],[1,3],[2,5],[3,4],[3,5]]);const t=ri(1,8);return NUM(`닮음비가 ${m} : ${n}인 두 닮은 도형이 있다. 작은 도형의 넓이가 ${m*m*t}일 때, 큰 도형의 넓이는?`,n*n*t,'닮음비가 m : n이면 넓이의 비는 m² : n²이에요.',`${m*m*t} × ${n*n}/${m*m} = ${n*n*t}`)}],
+[[3],L=>{const [m,n]=pick([[1,2],[2,3],[1,3],[2,5],[3,4]]);const t=ri(1,6);
+  if(rand()<.5)return NUM(`닮음비가 ${m} : ${n}인 두 닮은 입체도형이 있다. 작은 도형의 부피가 ${m**3*t}일 때, 큰 도형의 부피는?`,n**3*t,'닮음비가 m : n이면 부피의 비는 m³ : n³이에요.',`${m**3*t} × ${n**3}/${m**3} = ${n**3*t}`);
+  return NUM(`닮은 두 입체도형의 겉넓이의 비가 ${m*m} : ${n*n}이다. 작은 도형의 부피가 ${m**3*t}일 때, 큰 도형의 부피는?`,n**3*t,'겉넓이의 비 → 닮음비(제곱근) → 부피의 비(세제곱) 순서로 구해요.',`닮음비 ${m} : ${n} → 부피의 비 ${m**3} : ${n**3} → ${n**3*t}`)}],
+[[2,3],L=>{if(L===2){const a=ri(2,5),b=ri(1,5),t=ri(1,4);return NUM(`삼각형 ABC에서 점 D, E가 각각 변 AB, AC 위에 있고 DE ∥ BC 이다. AD = ${a}, DB = ${b}, AE = ${a*t} 일 때, EC의 길이는?`,b*t,'DE ∥ BC이면 AD : DB = AE : EC 예요.',`${a} : ${b} = ${a*t} : EC → EC = ${b*t}`)}
+  const a=ri(2,5),b=ri(1,5),k=ri(1,4);return NUM(`삼각형 ABC에서 점 D, E가 각각 변 AB, AC 위에 있고 DE ∥ BC 이다. AD = ${a}, DB = ${b}, BC = ${(a+b)*k} 일 때, DE의 길이는?`,a*k,'△ADE ∽ △ABC 이고 닮음비는 AD : AB 예요.',`AD : AB = ${a} : ${a+b} → DE = ${(a+b)*k} × ${a}/${a+b} = ${a*k}`)}],
+[[1],L=>{const bc=2*ri(3,15);return NUM(`삼각형 ABC에서 변 AB, AC의 중점을 각각 M, N이라 하자. BC = ${bc} 일 때, MN의 길이는?`,bc/2,'삼각형의 두 변의 중점을 이은 선분은 나머지 한 변에 평행하고 길이는 그 절반이에요.',`MN = ½ × BC = ${bc/2}`)}],
+[[2],L=>{const k=ri(2,6);if(rand()<.5)return NUM(`삼각형 ABC의 무게중심을 G, 변 BC의 중점을 D라 하자. AD = ${3*k} 일 때, AG의 길이는?`,2*k,'무게중심은 중선을 꼭짓점으로부터 2 : 1로 나눠요.',`AG = ${3*k} × 2/3 = ${2*k}`);
+  const S=6*ri(2,10);return NUM(`넓이가 ${S}인 삼각형 ABC의 무게중심을 G라 할 때, 삼각형 GBC의 넓이는?`,S/3,'무게중심과 세 꼭짓점을 이으면 삼각형이 넓이가 같은 3개로 나뉘어요.',`${S} ÷ 3 = ${S/3}`)}],
+[[2],L=>{const v=pick(['AA','SAS','SSS','NO']);const names={AA:'AA 닮음',SAS:'SAS 닮음',SSS:'SSS 닮음',NO:'닮음이라고 할 수 없다'};
+  const a=ri(30,70),b=ri(40,80),k=ri(2,3),p=ri(2,6),q=ri(3,8),r=ri(4,9);
+  const txt={AA:`△ABC와 △DEF에서 ∠A = ∠D = ${a}°, ∠B = ∠E = ${b}° 이다.`,SAS:`△ABC와 △DEF에서 AB : DE = AC : DF = 1 : ${k} 이고 ∠A = ∠D 이다.`,SSS:`△ABC와 △DEF에서 AB = ${p}, BC = ${q}, CA = ${r}, DE = ${k*p}, EF = ${k*q}, FD = ${k*r} 이다.`,NO:`△ABC와 △DEF에서 AB : DE = BC : EF = 1 : ${k} 이고 ∠A = ∠D 이다.`}[v];
+  const exp={AA:'두 쌍의 대응각의 크기가 각각 같으므로 AA 닮음입니다.',SAS:'두 쌍의 대응변의 길이의 비가 같고 그 끼인각의 크기가 같으므로 SAS 닮음입니다.',SSS:`세 쌍의 대응변의 길이의 비가 모두 1 : ${k}로 같으므로 SSS 닮음입니다.`,NO:'∠A는 AB와 AC의 끼인각인데, 주어진 비는 AB와 BC에 대한 것이라 SAS 조건이 아니에요. 따라서 닮음이라고 할 수 없습니다.'}[v];
+  return CH(`${txt} 이 두 삼각형이 닮음이 되는 조건은 무엇인가요?`,names[v],Object.values(names).filter(x=>x!==names[v]),'닮음 조건: AA, SAS(두 변의 비와 끼인각), SSS(세 변의 비)',exp)}],
+[[3],L=>{if(rand()<.5){const p=ri(1,5),q=ri(1,6);return NUM(`∠A = 90° 인 직각삼각형 ABC의 꼭짓점 A에서 빗변 BC에 내린 수선의 발을 H라 하자. BH = ${p*p}, HC = ${q*q} 일 때, AH의 길이는?`,p*q,'AH² = BH × HC (직각삼각형의 닮음을 이용한 공식)',`AH² = ${p*p} × ${q*q} → AH = ${p*q}`)}
+  const u=ri(1,3),s=ri(1,3),t=s+ri(1,3);return NUM(`∠A = 90° 인 직각삼각형 ABC의 꼭짓점 A에서 빗변 BC에 내린 수선의 발을 H라 하자. BH = ${u*s*s}, BC = ${u*t*t} 일 때, AB의 길이는?`,u*s*t,'AB² = BH × BC (직각삼각형의 닮음을 이용한 공식)',`AB² = ${u*s*s} × ${u*t*t} = ${(u*s*t)**2} → AB = ${u*s*t}`)}],
+[[2],L=>{const u=ri(1,4),v=ri(u+1,u+3),t=ri(1,3),w=ri(2,6);return NUM(`키가 ${u*t*10}cm인 막대의 그림자의 길이가 ${v*t*10}cm일 때, 같은 시각에 그림자의 길이가 ${v*w*10}cm인 나무의 높이는 몇 cm일까요? (cm)`,u*w*10,'같은 시각에 생기는 물체와 그림자는 닮은 직각삼각형을 이뤄요.',`${u*t*10} : ${v*t*10} = (나무의 높이) : ${v*w*10} → ${u*w*10}`)}],
+];
+
+// M2-10 피타고라스 정리
+U['M2-10']=[
+[[1],L=>{const [a,b,c]=scTri();const w=ri(0,2);
+  if(w===0)return NUM(`직각삼각형에서 직각을 낀 두 변의 길이가 ${a}, ${b}일 때, 빗변의 길이는?`,c,'(빗변)² = (한 변)² + (다른 변)²',`√(${a}² + ${b}²) = √${c*c} = ${c}`);
+  const x=w===1?a:b,y=w===1?b:a;return NUM(`직각삼각형에서 빗변의 길이가 ${c}이고 한 변의 길이가 ${x}일 때, 나머지 한 변의 길이는?`,y,'(빗변)² = (한 변)² + (다른 변)²',`√(${c}² − ${x}²) = √${y*y} = ${y}`)}],
+[[1],L=>{const [a,b,c]=scTri();const s=[a,b,c];
+  const wrong=[];const cand=[[a,b,c+1],[a,b+1,c],[a+1,b,c+1],[a,b,c-1],[a+1,b+1,c],[a+2,b,c]];
+  for(const w of shuffle(cand)){const t=[...w].sort((x,y)=>x-y);if(t[0]**2+t[1]**2!==t[2]**2&&w.every(v=>v>0)&&!wrong.includes(w.join(', ')))wrong.push(w.join(', '));if(wrong.length===3)break}
+  return CH('다음 중 세 변의 길이가 될 때 직각삼각형이 되는 것은?',s.join(', '),wrong,'가장 긴 변의 제곱이 나머지 두 변의 제곱의 합과 같은지 확인해요.',`${a}² + ${b}² = ${a*a+b*b} = ${c}² 이므로 ${s.join(', ')}가 직각삼각형이 됩니다.`)}],
+[[2],L=>{const [a,b,c]=scTri();const x1=ri(-5,5),y1=ri(-5,5),sx=rand()<.5?1:-1,sy=rand()<.5?1:-1;const x2=x1+sx*a,y2=y1+sy*b;
+  return NUM(`좌표평면 위의 두 점 A(${M(x1)}, ${M(y1)}), B(${M(x2)}, ${M(y2)}) 사이의 거리는?`,c,'두 점의 x좌표의 차와 y좌표의 차를 두 변으로 하는 직각삼각형을 생각해요.',`가로 ${a}, 세로 ${b} → √(${a}² + ${b}²) = ${c}`)}],
+[[2],L=>{const t=ri(1,9);if(rand()<.5)return NUM(`한 변의 길이가 ${2*t}인 정삼각형의 높이를 <i>k</i>√3 이라 할 때, 자연수 <i>k</i>의 값은?`,t,'정삼각형의 높이는 (√3/2) × (한 변의 길이)예요.',`높이 = (√3/2) × ${2*t} = ${t}√3 → k = ${t}`);
+  const [a,b,c]=scTri();return NUM(`밑변의 길이가 ${2*a}, 두 등변의 길이가 ${c}인 이등변삼각형의 넓이는?`,a*b,'꼭지각에서 밑변에 수선을 내리면 직각삼각형이 두 개 생겨요.',`높이 = √(${c}² − ${a}²) = ${b}, 넓이 = ½ × ${2*a} × ${b} = ${a*b}`)}],
+[[3],L=>{const t=ri(1,8);if(rand()<.5)return NUM(`한 변의 길이가 ${2*t}인 정삼각형의 넓이를 <i>k</i>√3 이라 할 때, 자연수 <i>k</i>의 값은?`,t*t,'정삼각형의 넓이는 (√3/4) × (한 변의 길이)²예요.',`(√3/4) × ${(2*t)**2} = ${t*t}√3 → k = ${t*t}`);
+  const [a,b,c]=scTri();return NUM(`∠C = 90°, BC = ${a}, CA = ${b}, AB = ${c}인 직각삼각형 ABC에서 점 C에서 빗변 AB에 내린 수선의 길이를 구하세요. (분수는 12/5 처럼 써도 돼요)`,F(a*b,c),'삼각형의 넓이를 두 가지 방법으로 나타내 보세요.',`½ × ${a} × ${b} = ½ × ${c} × h → h = ${fs(F(a*b,c))}`)}],
+[[3],L=>{const [a,b,c]=pick([[1,2,2],[2,3,6],[2,4,4],[4,4,7],[1,4,8],[2,6,9],[6,6,7],[3,4,12]]);const d=Math.round(Math.sqrt(a*a+b*b+c*c));
+  return NUM(`가로, 세로, 높이가 각각 ${a}, ${b}, ${c}인 직육면체의 대각선의 길이는?`,d,'직육면체의 대각선² = 가로² + 세로² + 높이²',`√(${a}² + ${b}² + ${c}²) = √${d*d} = ${d}`)}],
+[[2],L=>{const [r,h,l]=scTri();return NUM(`밑면의 반지름의 길이가 ${r}, 모선의 길이가 ${l}인 원뿔의 높이는?`,h,'원뿔의 높이, 밑면의 반지름, 모선은 직각삼각형을 이뤄요(모선이 빗변).',`√(${l}² − ${r}²) = ${h}`)}],
+[[1,2],L=>{const [a,b,c]=scTri();if(rand()<.5)return NUM(`직각삼각형의 직각을 낀 두 변을 한 변으로 하는 정사각형의 넓이가 각각 ${a*a}, ${b*b}이다. 빗변을 한 변으로 하는 정사각형의 넓이는?`,c*c,'세 정사각형의 넓이 사이에도 피타고라스 정리가 성립해요.',`${a*a} + ${b*b} = ${c*c}`);
+  return NUM(`직각삼각형의 빗변을 한 변으로 하는 정사각형의 넓이가 ${c*c}, 다른 한 변을 한 변으로 하는 정사각형의 넓이가 ${a*a}이다. 나머지 한 변을 한 변으로 하는 정사각형의 넓이는?`,b*b,'큰 정사각형의 넓이 = 나머지 두 정사각형의 넓이의 합',`${c*c} − ${a*a} = ${b*b}`)}],
+];
+
+// M2-11 경우의 수와 확률
+const isPr=n=>n>1&&[2,3,5,7,11,13].includes(n);
+U['M2-11']=[
+[[1,2],L=>{const S=ri(3,11);const sets=[[`두 눈의 수의 합이 ${S}`,(a,b)=>a+b===S],['두 눈의 수의 합이 소수',(a,b)=>isPr(a+b)],['두 눈의 수의 곱이 짝수',(a,b)=>(a*b)%2===0],['두 눈의 수가 서로 같다',(a,b)=>a===b],['두 눈의 수의 합이 4의 배수',(a,b)=>(a+b)%4===0],['적어도 한 개의 눈이 6',(a,b)=>a===6||b===6],[`두 눈의 수의 차가 ${ri(1,3)}`,null]];
+  let s=pick(sets.slice(0,6));if(L===2&&rand()<.3){const dd=ri(1,3);s=[`두 눈의 수의 차가 ${dd}`,(a,b)=>Math.abs(a-b)===dd]}
+  let n=0;for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)if(s[1](a,b))n++;if(n===0)return U['M2-11'][0][1](L);
+  if(L===1)return NUM(`서로 다른 두 개의 주사위를 동시에 던질 때, ${s[0]}인 경우의 수는?`,n,'표를 그려 모든 경우를 세어 보세요. (전체 36가지)',`조건을 만족하는 경우는 ${n}가지입니다.`);
+  const p=F(n,36);return NUM(`서로 다른 두 개의 주사위를 동시에 던질 때, ${s[0]}일 확률은? (분수는 5/36 처럼 써요)`,p,'확률 = (조건에 맞는 경우의 수) ÷ (전체 경우의 수 36)',`${n}/36 = ${fs(p)}`)}],
+[[2],L=>{const n=ri(3,6),k=ri(1,n-1);if(rand()<.5)return NUM(`동전 ${n}개를 동시에 던질 때, 앞면이 정확히 ${k}개 나오는 경우의 수는?`,C(n,k),'어느 동전이 앞면인지 고르는 방법의 수예요.',`${n}개 중 ${k}개를 고르는 경우의 수 = ${C(n,k)}`);
+  const p=F(C(n,k),2**n);return NUM(`동전 ${n}개를 동시에 던질 때, 앞면이 정확히 ${k}개 나올 확률은? (분수는 3/8 처럼 써요)`,p,'전체 경우의 수는 2의 n제곱이에요.',`${C(n,k)}/${2**n} = ${fs(p)}`)}],
+[[2],L=>{const n=ri(4,7);const w=ri(0,2);
+  if(w===0){const r=ri(2,3);return NUM(`${n}명의 학생 중에서 ${r}명을 뽑아 한 줄로 세우는 경우의 수는?`,Pm(n,r),'첫 번째, 두 번째, … 자리에 올 수 있는 사람의 수를 차례로 곱해요.',`${Array.from({length:r},(_,i)=>n-i).join(' × ')} = ${Pm(n,r)}`)}
+  if(w===1)return NUM(`${n+3}명의 학생 중에서 대표 2명을 뽑는 경우의 수는?`,C(n+3,2),'순서와 상관없이 뽑으므로 순서를 고려한 수를 2로 나눠요.',`${n+3}×${n+2}÷2 = ${C(n+3,2)}`);
+  return NUM(`${n}명의 학생 A, B, … 를 한 줄로 세울 때, A와 B가 이웃하여 서는 경우의 수는?`,2*fct(n-1),'이웃하는 둘을 한 사람으로 묶어서 세운 뒤, 둘이 자리를 바꾸는 경우를 곱해요.',`(${n-1})! × 2 = ${2*fct(n-1)}`)}],
+[[2,3],L=>{const kinds=[[`홀수`,v=>v%2===1],[`짝수`,v=>v%2===0],[`30 이상인 수`,v=>v>=30],[`3의 배수`,v=>v%3===0]];
+  const hasZero=rand()<.6;const digs=hasZero?[0,1,2,3,4]:[1,2,3,4,5];const k=pick(kinds);let n=0;
+  for(const a of digs)for(const b of digs){if(a===b||a===0)continue;if(k[1](a*10+b))n++}
+  if(n===0)return U['M2-11'][3][1](L);
+  return NUM(`${digs.length}장의 숫자 카드 ${digs.map(d=>`[${d}]`).join(' ')} 중에서 서로 다른 2장을 뽑아 두 자리의 정수를 만들 때, ${k[0]}${k[0].endsWith('수')?'':''}는 모두 몇 개일까요?`.replace('는 모두','이(가) 모두').replace('수이(가)','수가'),n,'십의 자리에는 0이 올 수 없어요. 일의 자리부터 정하거나 모든 경우를 나열해 보세요.',`조건을 만족하는 두 자리 정수는 ${n}개입니다.`)}],
+[[2,3],L=>{const r=ri(2,6),b=ri(2,6);const tot=r+b;
+  if(L===2||rand()<.4){const p=F(r,tot);return NUM(`빨간 공 ${r}개, 파란 공 ${b}개가 들어 있는 주머니에서 공 1개를 꺼낼 때, 빨간 공일 확률은? (분수는 2/5 처럼 써요)`,p,'(확률) = (빨간 공의 수) ÷ (전체 공의 수)',`${r}/${tot} = ${fs(p)}`)}
+  if(rand()<.5){const p=F(r*(r-1),tot*(tot-1));if(r<2)return U['M2-11'][4][1](2);return NUM(`빨간 공 ${r}개, 파란 공 ${b}개가 들어 있는 주머니에서 공을 한 개씩 연달아 2개를 꺼낼 때(꺼낸 공은 다시 넣지 않음), 모두 빨간 공일 확률은? (분수는 2/5 처럼 써요)`,p,'처음에 빨간 공을 꺼낼 확률 × 그다음에 빨간 공을 꺼낼 확률',`${r}/${tot} × ${r-1}/${tot-1} = ${fs(p)}`)}
+  const p=F(r*r,tot*tot);return NUM(`빨간 공 ${r}개, 파란 공 ${b}개가 들어 있는 주머니에서 공 1개를 꺼내 확인하고 다시 넣은 뒤 또 1개를 꺼낼 때, 2번 모두 빨간 공일 확률은? (분수는 2/5 처럼 써요)`,p,'다시 넣으므로 두 번의 시행은 서로 영향을 주지 않아요.',`${r}/${tot} × ${r}/${tot} = ${fs(p)}`)}],
+[[3],L=>{const n=ri(2,5);if(rand()<.5){const p=F(2**n-1,2**n);return NUM(`동전 ${n}개를 동시에 던질 때, 적어도 한 개는 앞면이 나올 확률은? (분수는 7/8 처럼 써요)`,p,'(적어도 하나일 확률) = 1 − (하나도 없을 확률)',`1 − (1/2)^${n} = ${fs(p)}`)}
+  let c=0;for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)if(a%2===1||b%2===1)c++;const p=F(c,36);
+  return NUM(`서로 다른 두 개의 주사위를 동시에 던질 때, 적어도 하나는 홀수의 눈이 나올 확률은? (분수는 7/8 처럼 써요)`,p,'(적어도 하나일 확률) = 1 − (모두 짝수일 확률)',`1 − 9/36 = ${fs(p)}`)}],
+];
+
+/* ===== 중3 ===== */
+const sq=n=>n*n;
+// M3-01 제곱근과 실수
+U['M3-01']=[
+[[1],L=>{const p=ri(2,12),q=pick([2,3,5,7,11]),r=ri(2,9);return NUM(`${rt(sq(p))} + (−${rt(q)})² − ${rt(`(−${r})²`)} 의 값은?`,p+q-r,'√(a²) = |a|, (√a)² = a, (−√a)² = a 예요.',`${p} + ${q} − ${r} = ${p+q-r}`)}],
+[[1],L=>{const N=ri(30,150);let c=0;for(let a=1;a<=N;a++)if(isSq(a))c++;return NUM(`1 이상 ${N} 이하의 자연수 <i>a</i> 중에서 ${rt('<i>a</i>')} 의 값이 자연수가 되는 <i>a</i>는 모두 몇 개인가요?`,c,'a가 (자연수)²인 수를 찾아요.',`제곱수는 1², 2², …, ${c}² 이므로 ${c}개`)}],
+[[1,2],L=>{const a=ri(2,7),b=pick([2,3,5,6,7]);return NUM(`${a}${rt(b)} = ${rt('<i>N</i>')} 일 때, 자연수 <i>N</i>의 값은?`,a*a*b,'근호 밖의 수를 제곱해서 근호 안으로 넣어요.',`${a}√${b} = √(${a}² × ${b}) = √${a*a*b}`)}],
+[[2],L=>{const a=ri(2,8),b=pick([2,3,5,6,7,10,11]);return NUM(`${rt(sq(a)*b)} = <i>a</i>${rt('<i>b</i>')} 일 때 (단, <i>b</i>는 가능한 한 작은 자연수), <i>a</i> + <i>b</i>의 값은?`,a+b,'근호 안의 수를 (제곱수) × (나머지)로 나눠서 제곱수를 근호 밖으로 보내요.',`√${sq(a)*b} = √(${a}² × ${b}) = ${a}√${b} → a + b = ${a+b}`)}],
+[[2],L=>{const b=pick([2,3,5,6,7]),k=ri(2,6);const a=k*b;return NUM(`${fr(a,rt(b))} = <i>k</i>${rt(b)} 일 때, 유리수 <i>k</i>의 값은?`,k,'분모와 분자에 √b를 곱해서 분모를 유리화해요.',`${a}/√${b} = ${a}√${b}/${b} = ${k}√${b}`)}],
+[[2,3],L=>{const r=pick([2,3,5,6,7]);const n=L===2?2:3;let k;let terms,txt;
+  for(;;){terms=[];for(let i=0;i<n;i++)terms.push({s:i===0?1:pick([1,-1]),c:ri(1,3),f:ri(1,4)});k=terms.reduce((a,t)=>a+t.s*t.c*t.f,0);if(k>0&&k<20)break}
+  txt=terms.map((t,i)=>{const body=`${t.c>1?t.c:''}${rt(sq(t.f)*r)}`;return i===0?body:(t.s>0?' + ':' − ')+body}).join('');
+  return NUM(`${txt} = <i>k</i>${rt(r)} 일 때, 자연수 <i>k</i>의 값은?`,k,'각 항을 a√r 꼴로 고친 뒤, 근호 안의 수가 같은 것끼리 계산해요.',terms.map(t=>`${t.c}√${sq(t.f)*r} = ${t.c*t.f}√${r}`).join(', ')+` → k = ${k}`)}],
+[[2],L=>{const p=ri(2,7),q=pick([2,3,5,6,7]);if(q===p*p)return U['M3-01'][6][1](L);return NUM(`(${p} + ${rt(q)})(${p} − ${rt(q)}) 의 값은?`,p*p-q,'(a + b)(a − b) = a² − b² 를 이용해요.',`${p}² − (√${q})² = ${p*p} − ${q} = ${p*p-q}`)}],
+[[3],L=>{const p=ri(1,5),q=pick([2,3,5,6,7]);return NUM(`(${p} + ${rt(q)})² = <i>a</i> + <i>b</i>${rt(q)} 일 때, 유리수 <i>a</i>, <i>b</i>에 대하여 <i>a</i> + <i>b</i>의 값은?`,p*p+q+2*p,'(a + b)² = a² + 2ab + b² 로 전개해요.',`${p*p} + 2×${p}√${q} + ${q} = ${p*p+q} + ${2*p}√${q} → a + b = ${p*p+q+2*p}`)}],
+[[2],L=>{const mode=pick(['max','min']);let list;
+  for(;;){const vals=new Set();list=[];while(list.length<4){const t=pick([0,1]);let e;if(t===0){const n=ri(2,40);if(isSq(n))continue;e={txt:rt(n),v:Math.sqrt(n)}}else{const a=ri(2,6);e={txt:String(a),v:a}}if(vals.has(Math.round(e.v*1e6)))continue;vals.add(Math.round(e.v*1e6));list.push(e)}
+   const s=[...list].sort((a,b)=>a.v-b.v);if(s[1].v-s[0].v>.05&&s[3].v-s[2].v>.05)break}
+  const s=[...list].sort((a,b)=>a.v-b.v);const right=mode==='max'?s[3]:s[0];
+  return CH(`다음 수 중 가장 ${mode==='max'?'큰':'작은'} 수는?`,right.txt,list.filter(e=>e!==right).map(e=>e.txt),'근호가 있는 수는 제곱해서 비교하거나, 가까운 정수와 견주어 보세요.',`값을 어림하면 ${list.map(e=>`${e.txt.replace(/<[^>]*>/g,'')} ≈ ${e.v.toFixed(2)}`).join(', ')}`)}],
+[[1],L=>{const n=pick([2,3,5,6,7,8,10,11,12,13,14,15]);const ks=shuffle([4,9,16,25,36,49]).slice(0,3);
+  const wrongs=[rt(ks[0]),`${pick([1,2,3])}/${pick([4,5,7])}`,`0.${dt(pick([3,6,7]))}`];
+  return CH('다음 중 무리수인 것은?',rt(n),wrongs,'무리수는 순환하지 않는 무한소수예요. 근호를 없앨 수 있으면 유리수예요.',`√${n}은 근호를 없앨 수 없는 무리수입니다. √${ks[0]} = ${Math.sqrt(ks[0])} 같은 수와 분수, 순환소수는 모두 유리수예요.`)}],
+[[2,3],L=>{let n;do{n=ri(3,60)}while(isSq(n));const a=Math.floor(Math.sqrt(n));
+  if(L===2)return NUM(`${rt(n)} 의 정수 부분은?`,a,'제곱해서 n에 가까운 두 정수를 찾아요.',`${a}² = ${a*a} < ${n} < ${(a+1)**2} 이므로 ${a} < √${n} < ${a+1}`);
+  const k=ri(5,12);const v=Math.floor(k-Math.sqrt(n));return NUM(`${k} − ${rt(n)} 의 정수 부분은?`,v,'먼저 √n이 어떤 두 정수 사이에 있는지 알아봐요.',`${a} < √${n} < ${a+1} 이므로 ${k-a-1} < ${k} − √${n} < ${k-a}, 정수 부분은 ${v}`)}],
+[[3],L=>{const base=pick([8,12,18,20,24,27,28,40,45,50,54,72]);if(rand()<.6)return NUM(`${rt(base+'<i>a</i>')} 이(가) 자연수가 되도록 하는 가장 작은 자연수 <i>a</i>의 값은?`,sqf(base),'N을 소인수분해해서 지수가 홀수인 소인수를 찾아요.',`${base} = ${factStr(base)} → 지수가 홀수인 소인수의 곱 ${sqf(base)}를 곱하면 제곱수가 됩니다.`);
+  const N=pick([72,108,150,180,200,288,300,432,450]);let c=0;for(let a=1;a<=N;a++)if(N%a===0&&isSq(N/a))c++;
+  return NUM(`${rt(`${N}/<i>a</i>`)} 이(가) 자연수가 되도록 하는 자연수 <i>a</i>는 모두 몇 개인가요?`,c,`${N}/a 가 (자연수)²이 되는 경우를 찾아요.`,`${N} = ${factStr(N)}. N ÷ a가 제곱수가 되는 a의 개수는 ${c}개입니다.`)}],
+];
+
+// M3-02 다항식의 곱셈과 인수분해
+const fx=(a)=>`(<i>x</i> ${a<0?'−':'+'} ${Math.abs(a)})`;
+U['M3-02']=[
+[[1],L=>{const a=nz(-9,9),b=nz(-9,9);return NUM(`(<i>x</i> ${sgn(a)})(<i>x</i> ${sgn(b)}) 를 전개했을 때, <i>x</i>의 계수와 상수항의 합은?`,a+b+a*b,'(x + a)(x + b) = x² + (a + b)x + ab',`x² ${sgn(a+b)}x ${sgn(a*b)} → ${a+b} + ${a*b} = ${a+b+a*b}`)}],
+[[1],L=>{const k=ri(1,6);const w=ri(0,3);
+  if(w===0)return NUM(`곱셈공식을 이용하여 ${100+k}²을 계산하면?`,(100+k)**2,'(a + b)² = a² + 2ab + b²',`(100 + ${k})² = 10000 + ${200*k} + ${k*k} = ${(100+k)**2}`);
+  if(w===1)return NUM(`곱셈공식을 이용하여 ${100-k}²을 계산하면?`,(100-k)**2,'(a − b)² = a² − 2ab + b²',`(100 − ${k})² = 10000 − ${200*k} + ${k*k} = ${(100-k)**2}`);
+  if(w===2)return NUM(`곱셈공식을 이용하여 ${100-k} × ${100+k}을 계산하면?`,10000-k*k,'(a + b)(a − b) = a² − b²',`100² − ${k}² = ${10000-k*k}`);
+  const m=ri(3,9)*10;return NUM(`곱셈공식을 이용하여 ${m+k} × ${m-k}을 계산하면?`,m*m-k*k,'(a + b)(a − b) = a² − b²',`${m}² − ${k}² = ${m*m-k*k}`)}],
+[[2],L=>{const w=ri(0,2);const a=nz(-4,4),b=nz(-6,6),c=nz(-4,4),d=nz(-6,6);
+  if(w===0)return NUM(`(${poly([a,b],['<i>x</i>',''])})(${poly([c,d],['<i>x</i>',''])}) 를 전개했을 때, <i>x</i>의 계수는?`,a*d+b*c,'분배법칙으로 한 항씩 곱해서 같은 차수끼리 모아요.',`x의 계수 = ${a}×${par(d)} + ${par(b)}×${c} = ${a*d+b*c}`);
+  if(w===1)return NUM(`(${poly([a,b],['<i>x</i>',''])})² 을 전개했을 때, <i>x</i>의 계수는?`,2*a*b,'(a + b)² = a² + 2ab + b²',`2 × ${a} × ${par(b)} = ${2*a*b}`);
+  return NUM(`(${poly([a,b],['<i>x</i>',''])})(${poly([a,-b],['<i>x</i>',''])}) 을 전개했을 때, <i>x</i>²의 계수와 상수항의 합은?`,a*a-b*b,'(A + B)(A − B) = A² − B²',`${a*a}x² − ${b*b} → ${a*a} + (${-b*b}) = ${a*a-b*b}`)}],
+[[1,2],L=>{for(;;){const a=nz(-9,9),b=nz(-9,9);if(Math.abs(a)===Math.abs(b))continue;
+  const e=`<i>x</i>² ${sgn(a+b)}<i>x</i> ${sgn(a*b)}`;const f=(p,q)=>`(<i>x</i> ${sgn(p)})(<i>x</i> ${sgn(q)})`;
+  return CH(`<i>x</i>² ${(a+b)<0?'−':'+'} ${Math.abs(a+b)}<i>x</i> ${(a*b)<0?'−':'+'} ${Math.abs(a*b)} 을 인수분해하면?`.replace(/ 1<i>x/,' <i>x'),f(a,b),[f(-a,-b),f(a,-b),f(-a,b)],'합이 x의 계수, 곱이 상수항인 두 수를 찾아요.',`곱이 ${a*b}, 합이 ${a+b}인 두 수는 ${a}, ${b} → ${f(a,b)}`)}}],
+[[2],L=>{for(;;){const a=ri(1,3),c=ri(1,3),b=nz(-6,6),d=nz(-6,6);const A=a*c,B=a*d+b*c,Cc=b*d;if(gcd(gcd(A,B),Cc)!==1)continue;
+  return NUM(`${quad(A,B,Cc)} 을(를) (<i>ax</i> + <i>b</i>)(<i>cx</i> + <i>d</i>) (<i>a</i>, <i>c</i>는 자연수, <i>b</i>, <i>d</i>는 정수)로 인수분해할 때, <i>a</i> + <i>b</i> + <i>c</i> + <i>d</i>의 값은?`,a+b+c+d,'x²의 계수 ac와 상수항 bd의 약수를 조합해 x의 계수 ad + bc가 되는 것을 찾아요.',`(${poly([a,b],['x',''])})(${poly([c,d],['x',''])}) → ${a}+${par(b)}+${c}+${par(d)} = ${a+b+c+d}`)}}],
+[[1],L=>{const m=ri(2,9);if(rand()<.5)return NUM(`<i>x</i>² + <i>kx</i> + ${m*m} 이(가) 완전제곱식이 되도록 하는 양수 <i>k</i>의 값은?`,2*m,'(x + m)² = x² + 2mx + m² 꼴이에요.',`${m*m} = ${m}² 이므로 k = 2 × ${m} = ${2*m}`);
+  return NUM(`<i>x</i>² − ${2*m}<i>x</i> + <i>k</i> 이(가) 완전제곱식이 되도록 하는 상수 <i>k</i>의 값은?`,m*m,'일차항 계수의 절반을 제곱하면 상수항이 돼요.',`(${2*m}/2)² = ${m*m}`)}],
+[[2],L=>{const w=ri(0,2);if(w===0){const S=ri(10,40),T=ri(2,9);return NUM(`<i>x</i> + <i>y</i> = ${S}, <i>x</i> − <i>y</i> = ${T} 일 때, <i>x</i>² − <i>y</i>²의 값은?`,S*T,'x² − y² = (x + y)(x − y)',`${S} × ${T} = ${S*T}`)}
+  if(w===1){const x=ri(20,120);return NUM(`<i>x</i> = ${x+3} 일 때, <i>x</i>² − 6<i>x</i> + 9 의 값은?`,x*x,'먼저 인수분해해서 (x − 3)² 로 바꿔요.',`(x − 3)² = ${x}² = ${x*x}`)}
+  const p=nz(-8,8),q=nz(-8,8);return NUM(`<i>x</i>² + <i>ax</i> + <i>b</i> 를 인수분해하면 (<i>x</i> ${sgn(p)})(<i>x</i> ${sgn(q)}) 일 때, 상수 <i>a</i> + <i>b</i>의 값은?`,p+q+p*q,'(x + p)(x + q)를 전개해서 계수를 비교해요.',`a = ${p+q}, b = ${p*q} → ${p+q+p*q}`)}],
+[[3],L=>{const w=ri(0,2);
+  if(w===0){const s=nz(-8,8),p=nz(-9,9);return NUM(`<i>x</i> + <i>y</i> = ${M(s)}, <i>xy</i> = ${M(p)} 일 때, <i>x</i>² + <i>y</i>²의 값은?`,s*s-2*p,'x² + y² = (x + y)² − 2xy',`${s*s} − 2×${par(p)} = ${s*s-2*p}`)}
+  if(w===1){const s=nz(-8,8),p=ri(1,10);return NUM(`<i>x</i> − <i>y</i> = ${M(s)}, <i>xy</i> = ${p} 일 때, <i>x</i>² + <i>y</i>²의 값은?`,s*s+2*p,'x² + y² = (x − y)² + 2xy',`${s*s} + 2×${p} = ${s*s+2*p}`)}
+  const k=ri(2,7);return NUM(`<i>x</i> + ${fr(1,'<i>x</i>')} = ${k} 일 때, <i>x</i>² + ${fr(1,'<i>x</i>²')} 의 값은?`,k*k-2,'(x + 1/x)² = x² + 2 + 1/x² 이에요.',`${k}² − 2 = ${k*k-2}`)}],
+[[3],L=>{const N=pick([12,16,18,20,24,30,36,40,48,60,72,84,90,96]);const set=new Set();for(let a=1;a*a<=N;a++)if(N%a===0)set.add(a+N/a);
+  return NUM(`<i>x</i>² + <i>kx</i> + ${N} = (<i>x</i> + <i>a</i>)(<i>x</i> + <i>b</i>) 가 되는 자연수 <i>a</i>, <i>b</i>가 있을 때, 상수 <i>k</i>가 될 수 있는 서로 다른 값은 모두 몇 개인가요?`,set.size,`곱이 ${N}인 두 자연수의 쌍을 모두 찾고, 각각의 합 k를 구해요.`,`${N}의 약수 쌍의 합: ${[...set].sort((a,b)=>a-b).join(', ')} → ${set.size}개`)}],
+];
+
+// M3-03 이차방정식
+U['M3-03']=[
+[[1],L=>{let a,b;do{a=nz(-8,8);b=nz(-8,8)}while(a===b);const bigger=Math.max(a,b);return NUM(`이차방정식 ${quad(1,-(a+b),a*b)} = 0 의 두 근 중 큰 근은?`,bigger,'좌변을 인수분해해서 (x − p)(x − q) = 0 꼴로 만들어요.',`(x ${sgn(-a)})(x ${sgn(-b)}) = 0 → x = ${a} 또는 x = ${b}`)}],
+[[2],L=>{for(;;){const r=nz(-5,5),s=nz(-5,5),t=ri(2,4);if(gcd(s,t)!==1)continue;const A=t,B=-(s+t*r),Cc=s*r;
+  const big=fs(F(Math.max(r*t,s),t));const v1=F(r),v2=F(s,t);const larger=(r>s/t)?v1:v2;
+  return NUM(`이차방정식 ${quad(A,B,Cc)} = 0 의 두 근 중 큰 근은? (분수는 3/2 처럼 써요)`,larger,'(근의 공식 또는 인수분해) 인수분해가 어려우면 근의 공식을 써요.',`(x ${sgn(-r)})(${t}x ${sgn(-s)}) = 0 → x = ${r} 또는 x = ${fs(F(s,t))}`)}}],
+[[2],L=>{if(rand()<.5){const m=ri(1,9);return NUM(`이차방정식 <i>x</i>² − ${2*m}<i>x</i> + <i>k</i> = 0 이 중근을 가질 때, 상수 <i>k</i>의 값은?`,m*m,'(x − m)² = 0 꼴이어야 해요.',`(${2*m}/2)² = ${m*m}`)}
+  const m=ri(1,8);return NUM(`이차방정식 <i>x</i>² + ${2*m}<i>x</i> + <i>k</i> = 0 이 중근을 가질 때, 그 중근은? (음수도 가능)`,-m,'(x + m)² = 0 꼴이므로 중근은 x = −m 이에요.',`k = ${m*m}, (x + ${m})² = 0 → x = ${-m}`)}],
+[[2],L=>{const a=nz(-3,3),b=nz(-6,6),c=nz(-6,6);const D=b*b-4*a*c;const n=D>0?2:D===0?1:0;
+  return CH(`이차방정식 ${quad(a,b,c)} = 0 의 서로 다른 실근의 개수는?`,`${n}개`,[0,1,2].filter(x=>x!==n).map(x=>`${x}개`),'판별식 D = b² − 4ac 의 부호를 살펴보세요.',`D = ${b}² − 4×${par(a)}×${par(c)} = ${D} ${D>0?'> 0 → 서로 다른 두 실근':D===0?'= 0 → 중근(1개)':'< 0 → 실근 없음'}`)}],
+[[2],L=>{const p=nz(-6,6),k=nz(-7,7);let q=-k-p;const m=p*q;
+  return NUM(`이차방정식 ${quad(1,k,m)} = 0 의 한 근이 ${M(p)}일 때, 다른 한 근은?`,q,'한 근을 대입하거나 인수분해해서 구해요.',`(x ${sgn(-p)})(x ${sgn(-q)}) = 0 이므로 다른 근은 ${q}`)}],
+[[2],L=>{const p=ri(1,6),r=ri(-15,10);return NUM(`이차방정식 ${quad(1,2*p,r)} = 0 을 (<i>x</i> + <i>A</i>)² = <i>B</i> 꼴로 고칠 때, <i>A</i> + <i>B</i>의 값은?`,p+p*p-r,'상수항을 이항한 뒤, 양변에 (일차항 계수의 ½)²을 더해요.',`x² + ${2*p}x = ${-r} → (x + ${p})² = ${p*p-r} → A + B = ${p+p*p-r}`)}],
+[[2,3],L=>{const n=ri(3,14);if(rand()<.5)return NUM(`연속하는 두 자연수의 곱이 ${n*(n+1)}일 때, 두 자연수 중 작은 수는?`,n,'작은 수를 x로 놓으면 x(x + 1) = (곱)',`x(x + 1) = ${n*(n+1)} → x = ${n}`);
+  const d=ri(1,5),w=ri(2,10);return NUM(`가로의 길이가 세로의 길이보다 ${d} 긴 직사각형의 넓이가 ${w*(w+d)}일 때, 세로의 길이는?`,w,'세로를 x로 놓으면 가로는 x + d예요.',`x(x + ${d}) = ${w*(w+d)} → x = ${w}`)}],
+[[3],L=>{const n=ri(5,18);return NUM(`대각선의 총 개수가 ${n*(n-3)/2}개인 다각형은 몇 각형일까요? (변의 수)`,n,'n각형의 대각선의 총 수는 n(n − 3)/2 개예요.',`n(n − 3)/2 = ${n*(n-3)/2} → n² − 3n − ${n*(n-3)} = 0 → n = ${n}`)}],
+[[3],L=>{let a,b;do{a=nz(-9,9);b=nz(-9,9)}while(a===b);const hi=Math.max(a,b),lo=Math.min(a,b);const m=ri(2,3);
+  return NUM(`이차방정식 ${quad(1,-(a+b),a*b)} = 0 의 두 근 중 큰 근을 <i>p</i>, 작은 근을 <i>q</i>라 할 때, <i>p</i> − ${m}<i>q</i>의 값은?`,hi-m*lo,'먼저 인수분해해서 두 근을 구해요.',`두 근은 ${lo}, ${hi} → ${hi} − ${m}×${par(lo)} = ${hi-m*lo}`)}],
+[[3],L=>{let q;do{q=ri(2,30)}while(isSq(q));const p=ri(1,6);return NUM(`이차방정식 ${quad(1,2*p,p*p-q)} = 0 의 해가 <i>x</i> = −<i>a</i> ± ${rt('<i>b</i>')} 일 때, 자연수 <i>a</i> + <i>b</i>의 값은?`,p+q,'근의 공식 또는 (x + p)² = q 꼴로 바꿔요.',`(x + ${p})² = ${q} → x = −${p} ± √${q} → a + b = ${p+q}`)}],
+];
+
+// M3-04 이차함수
+const vf=(a,p,q)=>`<i>y</i> = ${a===1?'':a===-1?'−':M(a)}(<i>x</i> ${p<0?'+':'−'} ${Math.abs(p)||''})²`.replace(' ­','')+(q?` ${q<0?'−':'+'} ${Math.abs(q)}`:'');
+const vf2=(a,p,q)=>`<i>y</i> = ${a===1?'':a===-1?'−':M(a)}${p===0?'<i>x</i>':`(<i>x</i> ${p<0?'+':'−'} ${Math.abs(p)})`}²${q?` ${q<0?'−':'+'} ${Math.abs(q)}`:''}`;
+U['M3-04']=[
+[[1],L=>{const a=nz(-4,4),p=nz(-6,6),q=nz(-8,8);return NUM(`이차함수 ${vf2(a,p,q)} 의 그래프의 꼭짓점의 좌표를 (<i>p</i>, <i>q</i>)라 할 때, <i>p</i> + <i>q</i>의 값은?`,p+q,'y = a(x − p)² + q 의 꼭짓점은 (p, q)예요.',`꼭짓점은 (${p}, ${q}) → ${p+q}`)}],
+[[1],L=>{const a=nz(-3,3),p=nz(-5,5),q=ri(-8,8);return NUM(`이차함수 ${vf2(a,p,q)} 의 그래프가 <i>y</i>축과 만나는 점의 <i>y</i>좌표는?`,a*p*p+q,'x = 0 을 대입해 보세요.',`${a}×(${-p})² + ${q} = ${a*p*p+q}`)}],
+[[2],L=>{const a=nz(-3,3),p=nz(-4,4),q=nz(-9,9);const b=-2*a*p,c=a*p*p+q;
+  return NUM(`이차함수 <i>y</i> = ${quad(a,b,c)} 의 ${a>0?'최솟값':'최댓값'}은?`,q,'y = a(x − p)² + q 꼴로 고치면 꼭짓점의 y좌표가 최솟값(또는 최댓값)이에요.',`y = ${a}(x ${sgn(-p)})² ${sgn(q)} 이므로 x = ${p}일 때 ${a>0?'최솟값':'최댓값'} ${q}`)}],
+[[2],L=>{const a=nz(-3,3),p=nz(-4,4),q=nz(-6,6),m=p+nz(-3,3);if(m===p)return U['M3-04'][3][1](2);
+  return NUM(`이차함수 <i>y</i> = <i>a</i>(<i>x</i> ${p<0?'+':'−'} ${Math.abs(p)||0})² ${q<0?'−':'+'} ${Math.abs(q)} 의 그래프가 점 (${M(m)}, ${M(a*(m-p)**2+q)}) 를 지날 때, 상수 <i>a</i>의 값은?`.replace('(<i>x</i> − 0)','<i>x</i>'),a,'지나는 점의 좌표를 식에 대입해요.',`${a*(m-p)**2+q} = a(${m} ${sgn(-p)})² ${sgn(q)} → a = ${a}`)}],
+[[2],L=>{const r1=ri(-6,3),d=2*ri(1,4),r2=r1+d,a=nz(-3,3);
+  if(rand()<.5)return NUM(`이차함수 <i>y</i> = ${a===1?'':a===-1?'−':a}(<i>x</i> ${sgn(-r1)})(<i>x</i> ${sgn(-r2)}) 의 그래프가 <i>x</i>축과 만나는 두 점 사이의 거리는?`.replace('(<i>x</i> + 0)','<i>x</i>').replace('(<i>x</i> − 0)','<i>x</i>'),d,'y = 0 일 때의 x의 값이 두 점의 x좌표예요.',`x = ${r1}, ${r2} → 거리 ${d}`);
+  return NUM(`이차함수 <i>y</i> = ${a===1?'':a===-1?'−':a}(<i>x</i> ${sgn(-r1)})(<i>x</i> ${sgn(-r2)}) 의 그래프의 꼭짓점의 <i>y</i>좌표는?`.replace('(<i>x</i> + 0)','<i>x</i>').replace('(<i>x</i> − 0)','<i>x</i>'),-a*d*d/4,'꼭짓점의 x좌표는 두 근의 한가운데예요. 그 값을 대입해요.',`x = ${(r1+r2)/2} 대입 → y = ${a}×(${(r1+r2)/2-r1})×(${(r1+r2)/2-r2}) = ${-a*d*d/4}`)}],
+[[2],L=>{const neg=rand()<.5;let list;const pool=[-4,-3,-2,-1,F(-1,2),F(-1,3),F(1,2),1,2,3,4];
+  for(;;){list=shuffle(pool.map(v=>typeof v==='number'?F(v):v)).slice(0,4);const n=list.filter(f=>f.n<0).length;if(neg?(n>=2&&n<4):(n<=2&&n>=1&&list.length-n>=2))break}
+  const val=f=>f.n/f.d;const grp=list.filter(f=>neg?f.n<0:f.n>0);
+  const right=neg?grp.reduce((m,f)=>val(f)<val(m)?f:m):grp.reduce((m,f)=>val(f)<val(m)?f:m);
+  const t=f=>`<i>y</i> = ${f.d===1?(f.n===1?'':M(f.n)):(f.n<0?'−':'')+fr(Math.abs(f.n),f.d)}<i>x</i>²`;
+  return CH(`다음 이차함수 중 그래프가 ${neg?'위로 볼록하면서 폭이 가장 좁은':'아래로 볼록하면서 폭이 가장 넓은'} 것은?`,t(right),list.filter(f=>f!==right).map(t),'a>0이면 아래로 볼록, a<0이면 위로 볼록. |a|가 클수록 폭이 좁아요.',neg?'a가 음수인 것 중 |a|가 가장 큰 것을 고릅니다.':'a가 양수인 것 중 |a|가 가장 작은 것을 고릅니다.')}],
+[[3],L=>{if(rand()<.5){const s=4*ri(3,12);return NUM(`둘레의 길이가 ${s}인 직사각형에서 가로의 길이를 <i>x</i>라 할 때, 직사각형의 넓이의 최댓값은?`,(s/4)**2,'세로를 x에 대한 식으로 쓰고, 넓이를 x에 대한 이차식으로 나타내요.',`세로 = ${s/2} − x, 넓이 = x(${s/2} − x). x = ${s/4}일 때 최대 ${(s/4)**2}`)}
+  const t=ri(1,4),c=ri(1,5)*5;return NUM(`지면에서 쏘아 올린 공의 <i>t</i>초 후의 높이를 <i>h</i>(m)라 하면 <i>h</i> = −5<i>t</i>² + ${10*t}<i>t</i> + ${c} 이다. 공이 가장 높이 올라갔을 때의 높이는? (m)`,c+5*t*t,'이차식을 완전제곱식 꼴로 고쳐서 꼭짓점의 y좌표를 구해요.',`h = −5(t − ${t})² + ${c+5*t*t} → 최댓값 ${c+5*t*t}`)}],
+[[1],L=>{const p=nz(-5,5),q=nz(-6,6);const quad_=(p>0&&q>0)?1:(p<0&&q>0)?2:(p<0&&q<0)?3:4;
+  return CH(`이차함수 <i>y</i> = (<i>x</i> ${p<0?'+':'−'} ${Math.abs(p)})² ${q<0?'−':'+'} ${Math.abs(q)} 의 그래프의 꼭짓점은 제 몇 사분면 위에 있나요?`,`제${quad_}사분면`,[1,2,3,4].filter(x=>x!==quad_).map(x=>`제${x}사분면`),'꼭짓점의 좌표는 (p, q)예요. 부호를 확인해요.',`꼭짓점은 (${p}, ${q}) → 제${quad_}사분면`)}],
+[[3],L=>{const a=nz(-3,3),p=nz(-4,4),q=nz(-6,6),m=nz(-4,4),n=nz(-5,5);
+  return NUM(`이차함수 <i>y</i> = ${quad(a,-2*a*p,a*p*p+q)} 의 그래프를 <i>x</i>축의 방향으로 ${M(m)}만큼, <i>y</i>축의 방향으로 ${M(n)}만큼 평행이동한 그래프의 꼭짓점의 좌표를 (<i>s</i>, <i>t</i>)라 할 때, <i>s</i> + <i>t</i>의 값은?`,p+m+q+n,'먼저 꼭짓점의 좌표를 구하고, 그 점을 평행이동해요.',`처음 꼭짓점 (${p}, ${q}) → (${p+m}, ${q+n}) → ${p+m+q+n}`)}],
+];
+
+// M3-05 삼각비
+const trigPairs=[['sin 30° × cos 60°',F(1,4)],['sin 60° × cos 30°',F(3,4)],['tan 30° × tan 60°',F(1)],['sin 45° × cos 45°',F(1,2)],['(sin 45°)²',F(1,2)],['(cos 30°)²',F(3,4)],['(sin 60°)²',F(3,4)],['(tan 60°)²',F(3)],['(tan 30°)²',F(1,3)],['(sin 30°)²',F(1,4)],['(cos 60°)²',F(1,4)],['sin 30° × tan 45°',F(1,2)],['cos 60° × tan 45°',F(1,2)],['sin 90° × cos 60°',F(1,2)],['cos 0° × sin 30°',F(1,2)]];
+U['M3-05']=[
+[[1],L=>{const [a,b,c]=scTri().slice(0,3);const w=pick(['sin A','cos A','tan A','sin B','cos B','tan B']);
+  const v={'sin A':F(a,c),'cos A':F(b,c),'tan A':F(a,b),'sin B':F(b,c),'cos B':F(a,c),'tan B':F(b,a)}[w];
+  return NUM(`∠C = 90° 인 직각삼각형 ABC에서 BC = ${a}, CA = ${b}, AB = ${c} 일 때, ${w} 의 값은? (분수는 3/5 처럼 써요)`,v,'sin = 대변/빗변, cos = 밑변/빗변, tan = 대변/밑변 (기준각에서 바라본 변)',`${w} = ${fs(v)}`)}],
+[[1,2],L=>{const n=L===1?2:3;const a=pick(trigPairs),b=pick(trigPairs);if(a===b)return U['M3-05'][1][1](L);const pl=rand()<.5;const v=pl?fadd(a[1],b[1]):fsub(a[1],b[1]);
+  return NUM(`${a[0]} ${pl?'+':'−'} ${b[0]} 의 값은? (분수는 3/4 처럼 써요)`,v,'30°, 45°, 60°의 삼각비의 값을 외워 두면 편해요. (sin30°=1/2, cos60°=1/2, tan45°=1, sin60°=cos30°=√3/2, tan60°=√3, tan30°=1/√3, sin45°=cos45°=√2/2)',`${a[0]} = ${fs(a[1])}, ${b[0]} = ${fs(b[1])} → ${fs(v)}`)}],
+[[2],L=>{const w=ri(0,2);if(w===0){const h=2*ri(2,9);return NUM(`∠B = 90°, ∠A = 30° 인 직각삼각형 ABC에서 빗변 AC = ${h} 일 때, BC의 길이는?`,h/2,'BC = AC × sin 30°',`${h} × 1/2 = ${h/2}`)}
+  if(w===1){const k=ri(2,9);return NUM(`∠B = 90°, ∠A = 45° 인 직각삼각형 ABC에서 빗변 AC = ${k}√2 일 때, BC의 길이는?`,k,'BC = AC × sin 45° = AC × √2/2',`${k}√2 × √2/2 = ${k}`)}
+  const h=2*ri(2,9);return NUM(`∠B = 90°, ∠A = 60° 인 직각삼각형 ABC에서 빗변 AC = ${h} 일 때, AB의 길이는?`,h/2,'AB = AC × cos 60°',`${h} × 1/2 = ${h/2}`)}],
+[[2],L=>{const w=ri(0,2);if(w===0){const d=ri(5,30);return NUM(`나무에서 ${d}m 떨어진 지점에서 나무의 꼭대기를 올려다본 각의 크기가 45°이다. 눈높이를 무시할 때, 나무의 높이는 몇 m일까요?`,d,'tan 45° = 1',`높이 = ${d} × tan 45° = ${d}`)}
+  if(w===1){const k=ri(2,12);return NUM(`나무에서 ${k}√3 m 떨어진 지점에서 나무의 꼭대기를 올려다본 각의 크기가 30°이다. 눈높이를 무시할 때, 나무의 높이는 몇 m일까요?`,k,'높이 = (거리) × tan 30° = (거리) × 1/√3',`${k}√3 × 1/√3 = ${k}`)}
+  const k=ri(2,10);return NUM(`나무에서 ${k}√3 m 떨어진 지점에서 나무의 꼭대기를 올려다본 각의 크기가 60°이다. 눈높이를 무시할 때, 나무의 높이는 몇 m일까요?`,3*k,'높이 = (거리) × tan 60° = (거리) × √3',`${k}√3 × √3 = ${3*k}`)}],
+[[2,3],L=>{const [a,b,c]=scTri();const w=ri(0,1);if(w===0){return NUM(`∠B = 90° 인 직각삼각형 ABC에서 sin A = ${fs(F(a,c))} 이고 AC = ${c*2} 일 때, BC의 길이는?`.replace(/sin A = [^ ]+/,m=>m),F(a*2).n,'BC = AC × sin A',`${c*2} × ${fs(F(a,c))} = ${2*a}`)}
+  return NUM(`∠C = 90° 인 직각삼각형 ABC에서 sin A = ${fs(F(a,c))} 일 때, cos A × tan A 의 값은? (분수는 3/5 처럼 써요)`,F(a,c),'cos A × tan A = cos A × (sin A / cos A) = sin A 예요. 또는 세 변을 직접 구해요.',`cos A × tan A = ${fs(F(b,c))} × ${fs(F(a,b))} = ${fs(F(a,c))}`)}],
+[[3],L=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[8,15,17]]).map(v=>v);const k=ri(1,3);
+  return NUM(`∠C = 90° 인 직각삼각형 ABC에서 cos A = ${fs(F(b,c))} 일 때, sin A × tan A 의 값은? (분수는 3/5 처럼 써요)`,fmul(F(a,c),F(a,b)),'cos A의 값에서 직각삼각형의 세 변의 길이의 비를 구해요.',`세 변의 비 BC : CA : AB = ${a} : ${b} : ${c} → sin A = ${fs(F(a,c))}, tan A = ${fs(F(a,b))} → ${fs(fmul(F(a,c),F(a,b)))}`)}],
+[[3],L=>{const a=ri(2,10),b=2*ri(1,6);if(rand()<.5)return NUM(`두 변의 길이가 ${a}, ${b}이고 그 끼인각의 크기가 30°인 삼각형의 넓이는? (분수는 3/2 처럼 써도 돼요)`,F(a*b,4),'(넓이) = ½ × a × b × sin(끼인각)',`½ × ${a} × ${b} × sin 30° = ${fs(F(a*b,4))}`);
+  return NUM(`두 변의 길이가 ${a}, ${b}이고 그 끼인각의 크기가 60°인 삼각형의 넓이를 <i>k</i>√3 이라 할 때, <i>k</i>의 값은? (분수는 3/2 처럼 써도 돼요)`,F(a*b,4),'(넓이) = ½ × a × b × sin 60° = ½ × a × b × √3/2',`½ × ${a} × ${b} × √3/2 = ${fs(F(a*b,4))}√3`)}],
+];
+
+// M3-06 원의 성질
+U['M3-06']=[
+[[1],L=>{const [h,d,r]=scTri().sort((x,y)=>x-y);return NUM(`반지름의 길이가 ${r}인 원의 중심에서 현 AB까지의 거리가 ${d}일 때, 현 AB의 길이는?`,2*h,'원의 중심에서 현에 내린 수선은 그 현을 수직이등분해요.',`AB = 2 × √(${r}² − ${d}²) = 2 × ${h} = ${2*h}`.replace(/\s+/g,' '))}],
+[[1],L=>{const c=2*ri(20,70);return NUM(`한 원에서 호 AB에 대한 중심각의 크기가 ${c}°일 때, 호 AB에 대한 원주각의 크기는? (°)`,c/2,'(원주각) = ½ × (중심각)',`${c}° ÷ 2 = ${c/2}°`)}],
+[[1],L=>{const a=ri(25,65);return NUM(`선분 AB가 원 O의 지름이고, 점 C는 원 위의 점이다. ∠A = ${a}° 일 때 ∠B의 크기는? (°)`,90-a,'지름에 대한 원주각은 90°예요.',`∠C = 90°이므로 ∠B = 180° − 90° − ${a}° = ${90-a}°`)}],
+[[2],L=>{const [a,b,c]=scTri().sort((x,y)=>x-y);return NUM(`원 O의 접선 PA에서 A는 접점이다. 반지름 OA = ${a}, PA = ${b}일 때, OP의 길이는?`,c,'접선과 접점을 지나는 반지름은 수직이에요. 삼각형 OAP는 직각삼각형이에요.',`OP = √(${a}² + ${b}²) = ${c}`)}],
+[[2],L=>{const t=ri(40,110);return NUM(`원 O 밖의 한 점 P에서 원에 그은 두 접선의 접점을 A, B라 하자. ∠APB = ${t}° 일 때, ∠AOB의 크기는? (°)`,180-t,'사각형 OAPB에서 ∠OAP = ∠OBP = 90°예요.',`360° − 90° − 90° − ${t}° = ${180-t}°`)}],
+[[2],L=>{const A=ri(65,115);const w=ri(0,1);if(w===0)return NUM(`원에 내접하는 사각형 ABCD에서 ∠A = ${A}° 일 때, ∠C의 크기는? (°)`,180-A,'원에 내접하는 사각형은 마주 보는 두 각의 합이 180°예요.',`180° − ${A}° = ${180-A}°`);
+  return NUM(`원에 내접하는 사각형 ABCD에서 변 BC의 연장선 위에 점 E를 잡는다. ∠A = ${A}° 일 때, ∠DCE의 크기는? (°)`,A,'내접사각형의 한 외각은 그 대각의 크기와 같아요.',`∠DCE = ∠A = ${A}°`)}],
+[[2],L=>{const t=ri(30,80);return NUM(`원 위의 점 A에서의 접선 AT와 현 AB가 이루는 각 ∠TAB = ${t}° 이다. 이 각 안에 있는 호 AB 위에 있지 않은 원 위의 점 C에 대하여 ∠ACB의 크기는? (°)`,t,'접선과 현이 이루는 각의 크기는 그 각 안에 있는 호에 대한 원주각의 크기와 같아요.',`∠ACB = ∠TAB = ${t}°`)}],
+[[3],L=>{const p=ri(2,4)*10,q=ri(3,6)*10,l=ri(2,6)*2;if(p===q)return U['M3-06'][6][1](3);
+  return NUM(`한 원에서 호 AB에 대한 원주각이 ${p}°, 호 CD에 대한 원주각이 ${q}° 이다. 호 AB의 길이가 ${l*p/10}일 때, 호 CD의 길이는?`.replace(/\d+일 때, 호 CD/,`${l*p/10}일 때, 호 CD`),l*q/10,'한 원에서 호의 길이는 그 호에 대한 원주각의 크기에 정비례해요.',`${p} : ${q} = ${l*p/10} : CD → CD = ${l*q/10}`)}],
+[[3],L=>{const a=ri(5,12),b=ri(5,12),c=ri(4,Math.min(a+b-2,14));return NUM(`원에 외접하는 사각형 ABCD에서 AB = ${a}, CD = ${b}, AD = ${c}일 때, BC의 길이는?`,a+b-c,'원에 외접하는 사각형은 마주 보는 두 변의 길이의 합이 서로 같아요.',`AB + CD = AD + BC → BC = ${a} + ${b} − ${c} = ${a+b-c}`)}],
+];
+
+// M3-07 통계
+U['M3-07']=[
+[[1],L=>{const n=5,m=ri(40,90);const dev=[];for(let i=0;i<n-1;i++)dev.push(nz(-8,8));const last=-dev.reduce((a,b)=>a+b,0);
+  return NUM(`5개의 변량의 평균이 ${m}이고, 그중 4개의 편차가 ${dev.map(M).join(', ')} 일 때, 나머지 변량은?`,m+last,'편차의 총합은 항상 0이에요.',`나머지 편차 = ${last}, 변량 = ${m} + ${par(last)} = ${m+last}`)}],
+[[2],L=>{for(;;){const n=5,dev=[];for(let i=0;i<n-1;i++)dev.push(ri(-4,4));dev.push(-dev.reduce((a,b)=>a+b,0));if(Math.abs(dev[4])>5)continue;
+  const ss=dev.reduce((a,b)=>a+b*b,0);if(ss===0||ss%n)continue;const m=ri(10,40);const vals=shuffle(dev.map(d=>d+m));
+  return NUM(`다섯 개의 변량 ${vals.join(', ')} 의 분산은?`,ss/n,'분산 = (편차의 제곱의 평균)',`평균 ${m}, 편차 ${vals.map(v=>v-m).join(', ')}, 분산 = ${ss}/${n} = ${ss/n}`)}}],
+[[3],L=>{for(;;){const n=5,dev=[];for(let i=0;i<n-1;i++)dev.push(ri(-5,5));dev.push(-dev.reduce((a,b)=>a+b,0));if(Math.abs(dev[4])>6)continue;
+  const ss=dev.reduce((a,b)=>a+b*b,0);if(ss===0||(ss/n)%1||!isSq(ss/n))continue;const m=ri(10,40);const vals=shuffle(dev.map(d=>d+m));
+  return NUM(`다섯 개의 변량 ${vals.join(', ')} 의 표준편차는?`,Math.sqrt(ss/n),'표준편차 = √(분산)',`분산 = ${ss/n}, 표준편차 = √${ss/n} = ${Math.sqrt(ss/n)}`)}}],
+[[2],L=>{const n=ri(4,6);const m=ri(5,20);const known=[];for(let i=0;i<n-1;i++)known.push(ri(m-6,m+6));const x=m*n-known.reduce((a,b)=>a+b,0);if(x<1||x>60)return U['M3-07'][3][1](2);
+  return NUM(`${n}개의 변량 ${known.join(', ')}, <i>x</i> 의 평균이 ${m}일 때, <i>x</i>의 값은?`,x,'평균 × 변량의 개수 = 변량의 총합',`${m} × ${n} − (${known.join(' + ')}) = ${x}`)}],
+[[2],L=>{const n=2*ri(2,4);const v=[];for(let i=0;i<n;i++)v.push(ri(2,30));const s=[...v].sort((a,b)=>a-b);const med=F(s[n/2-1]+s[n/2],2);
+  return NUM(`다음 자료의 중앙값을 구하세요: ${shuffle(v).join(', ')} (소수는 12.5 처럼 써요)`,med,'변량을 작은 것부터 크기순으로 나열해요. 개수가 짝수이면 가운데 두 수의 평균이에요.',`나열: ${s.join(', ')} → (${s[n/2-1]} + ${s[n/2]}) ÷ 2 = ${fs(med)}`)}],
+[[3],L=>{const a=ri(2,4),b=ri(1,8),s=ri(1,4),m=ri(10,30);const w=ri(0,2);
+  if(w===0)return NUM(`어떤 자료의 표준편차가 ${s}일 때, 각 변량을 ${a}배 하고 ${b}를 더하여 만든 새로운 자료의 표준편차는?`,a*s,'각 변량을 a배 하면 표준편차는 |a|배, 일정한 수를 더해도 표준편차는 변하지 않아요.',`${a} × ${s} = ${a*s}`);
+  if(w===1)return NUM(`어떤 자료의 분산이 ${s*s}일 때, 각 변량을 ${a}배 하고 ${b}를 더하여 만든 새로운 자료의 분산은?`,a*a*s*s,'각 변량을 a배 하면 분산은 a²배가 돼요.',`${a}² × ${s*s} = ${a*a*s*s}`);
+  return NUM(`어떤 자료의 평균이 ${m}일 때, 각 변량을 ${a}배 하고 ${b}를 더하여 만든 새로운 자료의 평균은?`,a*m+b,'평균도 똑같이 a배 하고 b를 더해요.',`${a} × ${m} + ${b} = ${a*m+b}`)}],
+[[1],L=>{const S=[['사람의 키와 몸무게','양의 상관관계'],['공부 시간과 시험 성적','양의 상관관계'],['자동차의 속력과 일정 시간 동안 이동한 거리','양의 상관관계'],['기온과 난방비','음의 상관관계'],['운동량과 체지방률','음의 상관관계'],['산의 높이와 그 산꼭대기의 기온','음의 상관관계'],['신발 크기와 수학 점수','상관관계가 없다'],['생일 날짜와 몸무게','상관관계가 없다']];
+  const s=pick(S);return CH(`${s[0]}의 산점도를 그렸을 때, 두 변량 사이의 관계로 가장 알맞은 것은?`,s[1],['양의 상관관계','음의 상관관계','상관관계가 없다'].filter(x=>x!==s[1]),'한 변량이 커질 때 다른 변량이 대체로 커지면 양의 상관관계, 작아지면 음의 상관관계예요.',`일반적으로 ${s[0]} 사이에는 ${s[1]}가 나타납니다.`.replace('상관관계가 없다가','상관관계가 없습니다.'))}],
+[[2],L=>{const n=11;const v=[];let c=ri(2,10);for(let i=0;i<n;i++){c+=ri(1,4);v.push(c)}
+  return NUM(`다음은 작은 것부터 크기순으로 나열한 11개 자료의 값이다: ${v.join(', ')}. 이 자료의 사분위수 범위(제3사분위수 − 제1사분위수)는?`,v[8]-v[2],'제1사분위수는 아래쪽 절반(5개)의 중앙값, 제3사분위수는 위쪽 절반(5개)의 중앙값이에요.',`Q₁ = ${v[2]}, Q₃ = ${v[8]} → ${v[8]} − ${v[2]} = ${v[8]-v[2]}`)}],
+];
+
+/* ===== 앱 ===== */
+function makeProblem(unit,L){const gens=U[unit].filter(g=>g[0].includes(L));const g=pick(gens);const p=g[1](L);p.unit=unit;p.L=L;return p}
+const UNITS=[
+{id:'M2-01',g:2,n:'유리수와 순환소수'},{id:'M2-02',g:2,n:'식의 계산'},{id:'M2-03',g:2,n:'일차부등식'},{id:'M2-04',g:2,n:'연립일차방정식'},
+{id:'M2-05',g:2,n:'일차함수와 그래프'},{id:'M2-06',g:2,n:'일차함수와 일차방정식의 관계'},{id:'M2-07',g:2,n:'삼각형의 성질'},{id:'M2-08',g:2,n:'사각형의 성질'},
+{id:'M2-09',g:2,n:'도형의 닮음'},{id:'M2-10',g:2,n:'피타고라스 정리'},{id:'M2-11',g:2,n:'경우의 수와 확률'},
+{id:'M3-01',g:3,n:'제곱근과 실수'},{id:'M3-02',g:3,n:'다항식의 곱셈과 인수분해'},{id:'M3-03',g:3,n:'이차방정식'},{id:'M3-04',g:3,n:'이차함수'},
+{id:'M3-05',g:3,n:'삼각비'},{id:'M3-06',g:3,n:'원의 성질'},{id:'M3-07',g:3,n:'통계'}];
+const UN=Object.fromEntries(UNITS.map(u=>[u.id,u]));
+const KEY='mathcheck.v1';
+const fresh=()=>({history:[],mastery:{},cur:null});
+function loadS(){try{const s=JSON.parse(localStorage.getItem(KEY));return s&&s.history?s:fresh()}catch(e){return fresh()}}
+let S=loadS();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const $app=document.getElementById('app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LN={1:'기본',2:'응용',3:'도전'};
+const pct=(c,t)=>t?Math.round(100*c/t):0;
+const stat=(p,t)=>!t?{k:'none',t:'아직 안 풀었어요'}:p>=80?{k:'good',t:'탄탄해요'}:p>=50?{k:'mid',t:'보강 필요'}:{k:'low',t:'집중 보강'};
+const UI={grade:'all',k:3,sel:null,view:'home'};
+let P=null; // 연습 상태
+const plain=h=>String(h).replace(/<span class="fr"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g,'($1/$2)').replace(/<sup>([^<]*)<\/sup>/g,'^$1').replace(/<[^>]*>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+
+function parseAns(s){s=String(s).trim().replace(/[−–—]/g,'-').replace(/\s+/g,'');if(!s||/[√^]/.test(s))return NaN;
+  s=s.replace(/[^\d./\-+]/g,'');const m=s.match(/^([+-]?\d+(?:\.\d+)?)(?:\/(\d+(?:\.\d+)?))?$/);if(!m)return NaN;let v=parseFloat(m[1]);if(m[2]){const d=parseFloat(m[2]);if(!d)return NaN;v/=d}return v}
+function grade(p,raw){if(raw===null||raw===undefined||raw==='')return false;if(p.type==='choice')return Number(raw)===p.ai;const v=parseAns(raw);return Number.isFinite(v)&&Math.abs(v-p.av)<1e-6*Math.max(1,Math.abs(p.av))}
+function record(unit,L,ok){const m=S.mastery[unit]||(S.mastery[unit]={c:0,t:0,L:{}});m.t++;if(ok)m.c++;const l=m.L[L]||(m.L[L]=[0,0]);l[1]++;if(ok)l[0]++;m.last=Date.now()}
+
+function renderProblemBody(p,idx,total,opts={}){
+  let inp='';
+  if(p.type==='choice'){inp=`<div class="choices">${p.choices.map((c,i)=>`<button class="choice${UI.sel===i?' on':''}" data-act="pick" data-i="${i}"><span class="no">${i+1}</span><span>${c}</span></button>`).join('')}</div>`}
+  else{inp=`<div class="ansrow"><input id="ans" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="정답을 입력하세요" value="${esc(opts.value||'')}" ${opts.locked?'disabled':''}></div>
+  ${opts.locked?'':`<div class="keys"><button data-act="key" data-k="−">−</button><button data-act="key" data-k="/">/</button><button data-act="key" data-k=".">.</button><button data-act="key" data-k="clr">지우기</button></div>
+  <p class="tiny">분수는 3/4 처럼 쓰고, 단위(개, cm, ° 등)는 안 써도 돼요.</p>`}`}
+  return `<div class="q">${p.q}</div>${inp}`}
+
+/* ---------- 홈 ---------- */
+function home(){
+  const units=UNITS.filter(u=>UI.grade==='all'||u.g==UI.grade);const nq=units.length*UI.k;
+  const g23=[2,3].map(g=>`<h3>${g===2?'중학교 2학년':'중학교 3학년'}</h3><div class="ugrid">${UNITS.filter(u=>u.g===g).map(u=>{const m=S.mastery[u.id];const p=m?pct(m.c,m.t):0;const st=stat(p,m?m.t:0);
+    return `<button class="ucard ${st.k}" data-act="practice" data-u="${u.id}"><b>${u.n}</b><span class="bar"><i style="width:${m?p:0}%"></i></span><small>${m?`누적 ${p}% (${m.c}/${m.t}) · ${st.t}`:'아직 안 풀었어요'}</small></button>`}).join('')}</div>`).join('');
+  const hist=S.history.length?S.history.slice().reverse().map((h,ri)=>{const i=S.history.length-1-ri;return `<button class="hrow" data-act="open" data-i="${i}"><b>${esc(h.date)}</b><span>${h.gradeLabel} · ${h.total.c}/${h.total.t}문항 · ${pct(h.total.c,h.total.t)}%</span></button>`}).join(''):'<p class="muted">아직 본 테스트가 없어요. 위에서 진단 테스트를 시작해 보세요.</p>';
+  $app.innerHTML=`
+  <header class="hero"><h1>중등 수학 실력 점검</h1><p>중2·중3 과정을 한 번에 점검하고,<br>부족한 단원을 골라서 채워 보세요.</p></header>
+  <section class="card">
+    <h2>1. 진단 테스트</h2>
+    ${S.cur?`<div class="resume"><b>풀던 테스트가 있어요</b><span>${S.cur.gradeLabel} · ${S.cur.idx}/${S.cur.problems.length}번까지 풀었어요</span><div class="row"><button class="btn" data-act="resume">이어서 풀기</button><button class="btn ghost" data-act="dropcur">버리기</button></div></div>`:''}
+    <p class="lab">범위</p>
+    <div class="chips">${[['all','중2 + 중3 전체'],['2','중학교 2학년'],['3','중학교 3학년']].map(([v,t])=>`<button class="chip${String(UI.grade)===v?' on':''}" data-act="grade" data-v="${v}">${t}</button>`).join('')}</div>
+    <p class="lab">단원당 문제 수</p>
+    <div class="chips">${[[2,'빠르게 (2문제)'],[3,'보통 (3문제)'],[4,'꼼꼼히 (4문제)']].map(([v,t])=>`<button class="chip${UI.k===v?' on':''}" data-act="size" data-v="${v}">${t}</button>`).join('')}</div>
+    <p class="muted">${units.length}개 단원 × ${UI.k}문제 = <b>${nq}문제</b> (약 ${Math.round(nq*1.5)}분). 단원마다 기본 → 응용 → 도전 순으로 나와요. 한 번에 다 풀기 어려우면 중간에 나가도 이어서 풀 수 있어요.</p>
+    <button class="btn big" data-act="start">테스트 시작하기</button>
+  </section>
+  <section class="card"><h2>2. 단원별 현황 · 보충 연습</h2><p class="muted">단원을 누르면 그 단원 연습을 시작해요. 문제는 풀 때마다 새로 만들어져요.</p>${g23}</section>
+  <section class="card"><h2>3. 지난 테스트</h2>${hist}${S.history.length?'<button class="btn ghost small" data-act="wipe">기록 모두 지우기</button>':''}</section>
+  ${footer()}`;
+}
+function footer(){return `<footer class="foot"><p><b>안내</b></p><p>이 앱의 문제는 중학교 수학 교육과정의 단원과 성취기준에 맞춰 컴퓨터가 새로 만들어 낸 <b>검수 전 연습 문제</b>입니다. 사람(교사)이 검수한 문제가 아니라서 드물게 어색한 표현이 있을 수 있어요. 학원 과제를 대신하는 것이 아니라 보충용으로 써 주세요.</p><p>풀이 기록은 이 기기의 브라우저 안에만 저장되고 어디로도 전송되지 않아요. 이름·학교 같은 개인정보는 입력하지 마세요.</p></footer>`}
+
+/* ---------- 테스트 ---------- */
+function buildTest(){
+  const units=UNITS.filter(u=>UI.grade==='all'||u.g==UI.grade);const Ls={2:[1,2],3:[1,2,3],4:[1,2,2,3]}[UI.k];
+  setSeed((Date.now()^Math.floor(Math.random()*1e9))>>>0);const seen=new Set(),probs=[];
+  units.forEach(u=>Ls.forEach(L=>{let p,t=0;do{p=makeProblem(u.id,L);t++}while(seen.has(p.q)&&t<40);seen.add(p.q);probs.push(p)}));
+  S.cur={id:Date.now(),gradeLabel:UI.grade==='all'?'중2 + 중3 전체':'중학교 '+UI.grade+'학년',k:UI.k,problems:probs,idx:0,ans:[]};save();UI.sel=null;
+}
+function testView(){
+  const c=S.cur;if(!c){UI.view='home';return render()}
+  const p=c.problems[c.idx];const total=c.problems.length;
+  $app.innerHTML=`<div class="topbar"><button class="link" data-act="pause">← 잠시 나가기</button><span>${c.idx+1} / ${total}</span></div>
+  <div class="prog"><i style="width:${Math.round(100*c.idx/total)}%"></i></div>
+  <section class="card"><div class="tags"><span class="tag">${UN[p.unit].g===2?'중2':'중3'} · ${esc(UN[p.unit].n)}</span><span class="tag lv${p.L}">${LN[p.L]}</span></div>
+  ${renderProblemBody(p,c.idx,total)}
+  <div class="row"><button class="btn ghost" data-act="skip">모르겠어요</button><button class="btn" data-act="next">${c.idx+1===total?'제출하고 결과 보기':'다음 문제'}</button></div>
+  <p class="tiny">테스트에서는 정답을 바로 알려 주지 않아요. 끝나면 한꺼번에 채점해요.</p></section>`;
+  const el=document.getElementById('ans');if(el){el.focus({preventScroll:true})}
+}
+function submitTest(skip){
+  const c=S.cur;const p=c.problems[c.idx];let raw=null;
+  if(!skip){if(p.type==='choice')raw=UI.sel;else{const el=document.getElementById('ans');raw=el?el.value.trim():''}}
+  const ok=skip?false:grade(p,raw);c.ans[c.idx]={raw:skip?null:raw,ok,skipped:skip||raw===null||raw===''};
+  c.idx++;UI.sel=null;
+  if(c.idx>=c.problems.length)return finishTest();
+  save();testView();window.scrollTo(0,0);
+}
+function finishTest(){
+  const c=S.cur;const units={},byL={1:[0,0],2:[0,0],3:[0,0]};let tc=0;const wrong=[];
+  c.problems.forEach((p,i)=>{const a=c.ans[i];const u=units[p.unit]||(units[p.unit]={c:0,t:0});u.t++;byL[p.L][1]++;if(a.ok){u.c++;byL[p.L][0]++;tc++}else wrong.push({unit:p.unit,L:p.L,q:p.q,my:a.skipped?null:(p.type==='choice'?p.choices[a.raw]:a.raw),ansText:p.ansText,type:p.type,sol:p.sol,hint:p.hint});record(p.unit,p.L,a.ok)});
+  const entry={ts:Date.now(),date:new Date().toLocaleString('ko-KR',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}),gradeLabel:c.gradeLabel,k:c.k,total:{c:tc,t:c.problems.length},units,byL,wrong};
+  S.history.push(entry);if(S.history.length>30)S.history.shift();S.cur=null;save();UI.view='result';UI.entry=entry;render();window.scrollTo(0,0);
+}
+
+/* ---------- 결과 ---------- */
+function resultView(e){
+  const tp=pct(e.total.c,e.total.t);const rows=UNITS.filter(u=>e.units[u.id]).map(u=>{const r=e.units[u.id];const p=pct(r.c,r.t);return{u,r,p,st:stat(p,r.t)}});
+  const weak=rows.filter(x=>x.p<80).sort((a,b)=>a.p-b.p||a.u.id.localeCompare(b.u.id));
+  const strong=rows.filter(x=>x.p>=80);
+  const lvRow=[1,2,3].map(l=>{const [c,t]=e.byL[l];return `<div class="lvbox"><b>${LN[l]}</b><span>${t?pct(c,t)+'%':'-'}</span><small>${c}/${t}</small></div>`}).join('');
+  const msg=tp>=85?'전체적으로 아주 탄탄해요. 아래 도전 문제로 더 올려 보세요.':tp>=65?'기본기는 괜찮아요. 아래 부족한 단원만 집중해서 채우면 돼요.':'아직 비어 있는 부분이 꽤 있어요. 한 단원씩 순서대로 채워 봐요.';
+  $app.innerHTML=`<div class="topbar"><button class="link" data-act="home">← 처음으로</button><span>${esc(e.date)}</span></div>
+  <section class="card center"><p class="muted">${e.gradeLabel} 진단 결과</p><div class="score"><b>${tp}</b><span>점</span></div><p>${e.total.t}문제 중 <b>${e.total.c}문제</b> 정답</p><p class="muted">${msg}</p></section>
+  <section class="card"><h2>난이도별 정답률</h2><div class="lvrow">${lvRow}</div><p class="tiny">기본 문제를 놓치면 개념 정리가, 도전 문제만 놓치면 응용 연습이 필요해요.</p></section>
+  <section class="card"><h2>단원별 결과</h2>${rows.map(x=>`<div class="urow ${x.st.k}"><div class="uh"><b>${esc(x.u.n)}</b><em>${x.st.t}</em></div><span class="bar"><i style="width:${x.p}%"></i></span><small>${x.u.g===2?'중2':'중3'} · ${x.r.c}/${x.r.t} 정답 (${x.p}%)</small></div>`).join('')}
+  <p class="tiny">단원당 문제 수가 2~4개라서 정확한 실력이 아니라 '대략의 위치'를 보여 주는 결과예요. 애매한 단원은 연습으로 한 번 더 확인해 보세요.</p></section>
+  <section class="card"><h2>이렇게 채워 보세요</h2>${weak.length?`<p class="muted">정답률이 낮은 단원부터 순서대로예요.</p>${weak.map((x,i)=>`<div class="todo"><span class="n">${i+1}</span><div><b>${esc(x.u.n)}</b><small>${x.p}% · ${x.st.t}</small></div><button class="btn small" data-act="practice" data-u="${x.u.id}">연습하기</button></div>`).join('')}`:'<p>모든 단원이 80% 이상이에요! 도전 난이도로 연습해 보세요.</p>'}
+  ${strong.length?`<p class="muted" style="margin-top:12px">탄탄한 단원: ${strong.map(x=>esc(x.u.n)).join(', ')}</p>`:''}</section>
+  <section class="card"><h2>틀린 문제 다시 보기 (${e.wrong.length})</h2>${e.wrong.length?e.wrong.map((w,i)=>`<details class="wr"><summary><span class="tag">${esc(UN[w.unit].n)}</span> <span class="tag lv${w.L}">${LN[w.L]}</span><div class="wq">${w.q}</div></summary>
+   <p>내 답: <b>${w.my===null?'(건너뜀)':w.type==='choice'?w.my:esc(w.my)}</b></p><p>정답: <b>${w.ansText}</b></p><p class="sol"><b>풀이</b> ${w.sol}</p><p class="tiny">힌트: ${w.hint}</p></details>`).join(''):'<p>틀린 문제가 없어요. 훌륭해요!</p>'}</section>
+  <section class="card"><h2>부모님께 보여 주기</h2><button class="btn ghost" data-act="copy">결과 요약 복사하기</button><p class="tiny" id="copied"></p></section>
+  <div class="row"><button class="btn big" data-act="home">처음으로</button></div>${footer()}`;
+}
+function summaryText(e){
+  const rows=UNITS.filter(u=>e.units[u.id]).map(u=>{const r=e.units[u.id];return `- ${u.n}: ${r.c}/${r.t} (${pct(r.c,r.t)}%)`});
+  const weak=UNITS.filter(u=>e.units[u.id]&&pct(e.units[u.id].c,e.units[u.id].t)<80).map(u=>u.n);
+  return `[중등 수학 실력 점검] ${e.date}\n범위: ${e.gradeLabel}\n전체: ${e.total.c}/${e.total.t} (${pct(e.total.c,e.total.t)}%)\n난이도별: 기본 ${e.byL[1][0]}/${e.byL[1][1]}, 응용 ${e.byL[2][0]}/${e.byL[2][1]}, 도전 ${e.byL[3][0]}/${e.byL[3][1]}\n\n단원별\n${rows.join('\n')}\n\n보강이 필요한 단원: ${weak.length?weak.join(', '):'없음'}`;
+}
+
+/* ---------- 연습 ---------- */
+function startPractice(uid){
+  const m=S.mastery[uid];const L=m&&m.t>=3&&pct(m.c,m.t)>=80?2:1;
+  P={unit:uid,mode:'auto',L,streak:0,miss:0,right:0,total:0,cur:null,done:false,last:null,hint:false,seen:[],raw:''};
+  UI.view='practice';UI.sel=null;nextPractice();
+}
+function nextPractice(){
+  setSeed((Date.now()^Math.floor(Math.random()*1e9))>>>0);
+  const L=P.mode==='auto'?P.L:P.mode;let p,t=0;do{p=makeProblem(P.unit,L);t++}while(P.seen.includes(p.q)&&t<40);
+  P.seen.push(p.q);if(P.seen.length>30)P.seen.shift();P.cur=p;P.done=false;P.last=null;P.hint=false;P.raw='';UI.sel=null;render();
+}
+function practiceView(){
+  const u=UN[P.unit],p=P.cur;const L=p.L;
+  const modes=[['auto','자동'],[1,'기본'],[2,'응용'],[3,'도전']];
+  let fb='';
+  if(P.done){const ok=P.last.ok;fb=`<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답이에요!':'아쉬워요'}</b>${ok?'':`<p>정답: <b>${p.ansText}</b></p>`}<p class="sol"><b>풀이</b> ${p.sol}</p></div><div class="row"><button class="btn" data-act="pnext">다음 문제</button></div>`}
+  $app.innerHTML=`<div class="topbar"><button class="link" data-act="home">← 그만하기</button><span>${P.right}/${P.total} 정답${P.streak>1?` · ${P.streak}연속`:''}</span></div>
+  <section class="card"><h2>${esc(u.n)}</h2><p class="muted">${u.g===2?'중2':'중3'} · 틀려도 괜찮아요. 풀이를 보면서 익혀요.</p>
+  <div class="chips">${modes.map(([v,t])=>`<button class="chip${P.mode===v?' on':''}" data-act="mode" data-v="${v}">${t}</button>`).join('')}</div>
+  ${P.mode==='auto'?'<p class="tiny">자동: 3번 연속 맞히면 한 단계 어려워지고, 2번 연속 틀리면 한 단계 쉬워져요.</p>':''}</section>
+  <section class="card"><div class="tags"><span class="tag lv${L}">${LN[L]}</span></div>
+  ${renderProblemBody(p,0,0,{locked:P.done,value:P.raw})}
+  ${P.done?fb:`<div class="row"><button class="btn ghost" data-act="hint">힌트 보기</button><button class="btn" data-act="check">정답 확인</button></div>${P.hint?`<div class="hintbox">💡 ${p.hint}</div>`:''}`}</section>${footer()}`;
+  if(P.done&&p.type==='choice'){document.querySelectorAll('.choice').forEach((b,i)=>{b.disabled=true;if(i===p.ai)b.classList.add('right');else if(i===P.last.raw)b.classList.add('wrong')})}
+  const el=document.getElementById('ans');if(el&&!P.done)el.focus({preventScroll:true});
+}
+function checkPractice(){
+  if(P.done)return;const p=P.cur;let raw;if(p.type==='choice')raw=UI.sel;else{const el=document.getElementById('ans');raw=el?el.value.trim():''}
+  if(raw===null||raw===''){const t=document.querySelector('.card .row');alert(p.type==='choice'?'보기를 먼저 골라 주세요.':'정답을 입력해 주세요.');return}
+  const ok=grade(p,raw);P.last={ok,raw};P.raw=p.type==='choice'?'':raw;P.done=true;P.total++;
+  if(ok){P.right++;P.streak++;P.miss=0;if(P.mode==='auto'&&P.streak>=3&&P.L<3){P.L++;P.streak=0;P.note='up'}}
+  else{P.streak=0;P.miss++;if(P.mode==='auto'&&P.miss>=2&&P.L>1){P.L--;P.miss=0}}
+  record(p.unit,p.L,ok);save();render();
+}
+
+/* ---------- 라우터 ---------- */
+function render(){
+  if(UI.view==='test')return testView();
+  if(UI.view==='practice')return practiceView();
+  if(UI.view==='result')return resultView(UI.entry);
+  home();
+}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if(a==='grade'){UI.grade=b.dataset.v;home()}
+  else if(a==='size'){UI.k=+b.dataset.v;home()}
+  else if(a==='start'){if(S.cur&&!confirm('풀던 테스트가 사라져요. 새로 시작할까요?'))return;buildTest();UI.view='test';render();window.scrollTo(0,0)}
+  else if(a==='resume'){UI.view='test';UI.sel=null;render();window.scrollTo(0,0)}
+  else if(a==='dropcur'){if(confirm('풀던 테스트를 버릴까요?')){S.cur=null;save();home()}}
+  else if(a==='pick'){UI.sel=+b.dataset.i;document.querySelectorAll('.choice').forEach((x,i)=>x.classList.toggle('on',i===UI.sel))}
+  else if(a==='key'){const el=document.getElementById('ans');if(!el||el.disabled)return;const k=b.dataset.k;if(k==='clr')el.value='';else el.value+=k;el.focus()}
+  else if(a==='next'){submitTest(false)}
+  else if(a==='skip'){submitTest(true)}
+  else if(a==='pause'){UI.view='home';render()}
+  else if(a==='home'){UI.view='home';P=null;render();window.scrollTo(0,0)}
+  else if(a==='open'){UI.entry=S.history[+b.dataset.i];UI.view='result';render();window.scrollTo(0,0)}
+  else if(a==='wipe'){if(confirm('테스트 기록과 단원별 현황을 모두 지울까요?')){S.history=[];S.mastery={};save();home()}}
+  else if(a==='copy'){const t=summaryText(UI.entry);const done=()=>{const c=document.getElementById('copied');if(c)c.textContent='복사했어요. 메신저나 메모에 붙여넣기 하세요.'};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,()=>{prompt('아래 내용을 복사하세요',t)});else prompt('아래 내용을 복사하세요',t)}
+  else if(a==='practice'){startPractice(b.dataset.u);window.scrollTo(0,0)}
+  else if(a==='mode'){const v=b.dataset.v;P.mode=v==='auto'?'auto':+v;nextPractice()}
+  else if(a==='check'){checkPractice()}
+  else if(a==='pnext'){nextPractice();window.scrollTo(0,0)}
+  else if(a==='hint'){P.hint=true;const el=document.getElementById('ans');P.raw=el?el.value:'';render()}
+});
+document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&document.activeElement&&document.activeElement.id==='ans'){ev.preventDefault();if(UI.view==='test')submitTest(false);else if(UI.view==='practice')checkPractice()}});
+render();
+
+})();
+</script>
+</body>
+</html>
